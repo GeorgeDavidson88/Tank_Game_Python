@@ -25,16 +25,26 @@ pygame.mouse.set_visible(False)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
-
 YELLOW = (255, 255, 0)
 CYAN = (0, 255, 255)
 PURPLE = (255, 0, 255)
-ORANGE = (255, 165, 0)
+ORANGE = (255, 128, 0)
 
-WHITE = (255, 255, 255)
+WHITE_1 = (255, 255, 255)
+
+WHITE_2 = (247, 247, 247)
+WHITE_3 = (239, 239, 239)
+WHITE_4 = (231, 231, 231)
+
+GRAY_1 = (32, 32, 32)
+GRAY_2 = (64, 64, 64)
+
+GRAY_3 = (104, 104, 104)
+GRAY_4 = (112, 112, 112)
+GRAY_5 = (120, 120, 120)
+GRAY_6 = (128, 128, 128)
+
 BLACK = (0, 0, 0)
-
-GRAY = (32, 32, 32)
 
 # sprite groups
 player_group = pygame.sprite.GroupSingle()
@@ -42,7 +52,8 @@ barral_group = pygame.sprite.GroupSingle()
 enemy_group = pygame.sprite.Group()
 player_bullet_group = pygame.sprite.Group()
 enemy_bullet_group = pygame.sprite.Group()
-tile_group = pygame.sprite.Group()
+collision_tile_group = pygame.sprite.Group()
+backgound_tile_group = pygame.sprite.Group()
 explosion_effect_group = pygame.sprite.Group()
 trail_effect_group = pygame.sprite.Group()
 
@@ -51,7 +62,7 @@ font_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
 font_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
 # text
-space_to_start_font = font_1.render("Press Space To Start", True, WHITE)
+space_to_start_font = font_1.render("Press Space To Start", True, WHITE_1)
 space_to_start_font_rect = space_to_start_font.get_rect(center=(WIN_WIDTH / 2, WIN_WIDTH / 2))
 
 successful_font = font_2.render("Successful", True, GREEN)
@@ -82,7 +93,7 @@ class Player(pygame.sprite.Sprite):
         self.player_shoot_timer = self.player_shoot_delay
 
     def horizontal_collisions(self):
-        for sprite in tile_group.sprites():
+        for sprite in collision_tile_group.sprites():
             if sprite.rect.colliderect(self):
                 if self.vector2.x > 0:
                     self.rect.right = sprite.rect.left
@@ -93,7 +104,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect_pos.x = sprite.rect.right
     
     def vertical_collisions(self):
-        for sprite in tile_group.sprites():
+        for sprite in collision_tile_group.sprites():
             if sprite.rect.colliderect(self):
                 if self.vector2.y > 0:
                     self.rect.bottom = sprite.rect.top
@@ -187,7 +198,7 @@ class Enemy(pygame.sprite.Sprite):
         self.vector2.y = random.choice(self.direction_list)
  
     def horizontal_collisions(self):
-        for sprite in tile_group.sprites():
+        for sprite in collision_tile_group.sprites():
             if sprite.rect.colliderect(self):
                 if self.vector2.x > 0:
                     self.rect.right = sprite.rect.left
@@ -200,7 +211,7 @@ class Enemy(pygame.sprite.Sprite):
                     self.vector2.x *= -1
  
     def vertical_collisions(self):
-        for sprite in tile_group.sprites():
+        for sprite in collision_tile_group.sprites():
             if sprite.rect.colliderect(self):
                 if self.vector2.y > 0:
                     self.rect.bottom = sprite.rect.top
@@ -292,7 +303,7 @@ class Bullet(pygame.sprite.Sprite):
         self.bounce_index = 0
 
     def collisions(self):
-        for sprite in tile_group.sprites():
+        for sprite in collision_tile_group.sprites():
             if self.rect.colliderect(sprite):
                 left = abs(self.rect.right - sprite.rect.left)
                 right = abs(self.rect.left - sprite.rect.right)
@@ -352,13 +363,13 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y):
+    def __init__(self,colour_list, pos_x, pos_y):
         super().__init__()
         self.width = 48
         self.height = self.width
  
         self.image = pygame.Surface((self.width, self.height))
-        self.image.fill(BLACK)
+        self.image.fill(random.choice(colour_list))
  
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
 
@@ -434,10 +445,13 @@ class Game():
         self.game_active = False
         self.game_just_started = True
 
-        self.current_time_text = font_1.render(f"Time: {round(self.current_time, 1)}", True, WHITE)
+        self.gray_colour_list = [GRAY_3, GRAY_4, GRAY_5, GRAY_6]
+        self.white_colour_list = [WHITE_1, WHITE_2, WHITE_3, WHITE_4]
+
+        self.current_time_text = font_1.render(f"| Time: {round(self.current_time, 1)}", True, WHITE_1)
         self.current_time_text_rect = self.current_time_text.get_rect(topleft=(0 + 48, 0))
 
-        self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)}", True, WHITE)
+        self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, WHITE_1)
         self.fastest_time_text_rect = self.fastest_time_text.get_rect(topright=(WIN_WIDTH - 48, 0))
 
     def level_setup(self, level_data):
@@ -447,8 +461,8 @@ class Game():
                 y = row_index * 48
 
                 if cell == "T":
-                    tile = Tile(x, y)
-                    tile_group.add(tile)
+                    tile = Tile(self.gray_colour_list, x, y)
+                    collision_tile_group.add(tile)
 
                 if cell == "P":
                     player = Player(x, y)
@@ -458,39 +472,42 @@ class Game():
                     enemy = Enemy(RED, 0.5, x, y)
                     enemy_group.add(enemy)
 
+                if cell == " ":
+                    tile = Tile(self.white_colour_list, x, y)
+                    backgound_tile_group.add(tile)
+
     def level_clear(self):
         player_group.empty()
         enemy_group.empty()
         player_bullet_group.empty()
         enemy_bullet_group.empty()
-        tile_group.empty()
+        collision_tile_group.empty()
+        backgound_tile_group.empty()
         trail_effect_group.empty()
         explosion_effect_group.empty()
 
     def load_level(self):
         if len(enemy_group) == 0:
-            self.current_level += 1
+            if self.current_level == 3:
+                self.game_active = False
+            else:
+                self.level_clear()
+                self.current_level += 1
 
             if self.current_level == 1:
-                self.level_clear()
                 self.level_setup(level_1)
             
             if self.current_level == 2:
-                self.level_clear()
                 self.level_setup(level_2)
 
             if self.current_level == 3:
-                self.level_clear()
                 self.level_setup(level_3)
 
-        if self.current_level == 4:
-            self.game_active = False
-
-    def score(self, delta_time):
+    def time(self, delta_time):
         self.current_time += delta_time
 
-        self.current_time_text = font_1.render(f"Time: {round(self.current_time, 1)}", True, WHITE)
-        self.current_time_text_rect = self.current_time_text.get_rect(topleft=(0 + 48, 0))
+        self.current_time_text = font_1.render(f"| Time: {round(self.current_time, 1)}", True, WHITE_1)
+        self.current_time_text_rect = self.current_time_text.get_rect(topleft=(48, 0))
 
     def bullet_bullet_collisions(self):
         for player_bullet_sprite in player_bullet_group.sprites():
@@ -516,13 +533,14 @@ class Game():
             self.game_active = False
 
     def update_display(self):
-        WIN.fill(GRAY)
+        WIN.fill(WHITE_1)
 
+        collision_tile_group.draw(WIN)
+        backgound_tile_group.draw(WIN)
         player_group.draw(WIN)
         enemy_group.draw(WIN)
         player_bullet_group.draw(WIN)
         enemy_bullet_group.draw(WIN)
-        tile_group.draw(WIN)
         trail_effect_group.draw(WIN)
         explosion_effect_group.draw(WIN)
 
@@ -535,20 +553,21 @@ class Game():
         explosion_effect_group.update(delta_time)
 
     def menu(self):
-        WIN.fill(GRAY)
+        WIN.fill(GRAY_1)
 
         WIN.blit(space_to_start_font, space_to_start_font_rect)
 
-        if self.current_level == 4:
+        if self.current_level == 3:
             WIN.blit(successful_font, successful_font_rect)
 
             if self.current_time < self.fastest_time:
                 self.fastest_time = self.current_time
-        elif not self.current_level == 4 and not self.game_just_started:
+
+        elif not self.current_level == 3 and not self.game_just_started:
             WIN.blit(failed_font, failed_font_rect)
 
             
-        self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)}", True, WHITE)
+        self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, WHITE_1)
         self.fastest_time_text_rect = self.fastest_time_text.get_rect(topright=(WIN_WIDTH - 48, 0))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -562,7 +581,7 @@ class Game():
             self.player_bullet_collisions()
 
             self.update_display()
-            self.score(delta_time)
+            self.time(delta_time)
             self.update_groups(delta_time)
         else:
             self.menu()
