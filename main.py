@@ -239,7 +239,7 @@ class Enemy(pygame.sprite.Sprite):
             self.vector2.y = random.choice(self.direction_list)
 
             self.direction = random.choice(self.direction_list)
-            self.direction_change_timer = self.direction_change_timer = random.randint(2, 5)
+            self.direction_change_timer = random.randint(2, 5)
 
     def update(self, delta_time):
         self.horizontal_movement(delta_time)
