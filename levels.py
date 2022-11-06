@@ -2,7 +2,7 @@
 # P = Player
 # E = Enemy
 
-Level_1 = [
+level_1 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "T                       T",
 "T                       T", #
@@ -23,19 +23,19 @@ Level_1 = [
  # # # # # # # # # # # # #
              # 
 
-Level_2 = [
+level_2 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "T                       T",
 "T                       T", #
 "T                       T",
 "T                       T", #
-"T                  E    T",
-"T    TTTTT              T", #
-"T    TTTTT              T",
-"T    TTTTT     TTTTT    T", ##
-"T              TTTTT    T",
-"T              TTTTT    T", #
-"T    P                  T",
+"T                       T",
+"T    TTTT          E    T", #
+"T    TTTT               T",
+"T    TTTT       TTTT    T", ##
+"T               TTTT    T",
+"T    P          TTTT    T", #
+"T                       T",
 "T                       T", #
 "T                       T",
 "T                       T", #
@@ -44,84 +44,23 @@ Level_2 = [
  # # # # # # # # # # # # #
              #
 
-Level_3 = [
+level_3 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"TTTT                    T",
+"TTTT                    T", #
+"TTTT                    T",
+"T                       T", #
+"T                       T",
+"T    E            T     T", #
+"T                 T     T",
+"T                 T  P  T", ##
+"T                 T     T",
+"T    E            T     T", #
 "T                       T",
 "T                       T", #
-"T                    P  T",
-"T     T                 T", #
-"T     T                 T",
-"T  E  T                 T", #
-"T     T                 T",
-"T     T                 T", ##
-"T     T                 T",
-"T     T                 T", #
-"T     T                 T",
-"T     T                 T", #
-"T                       T",
-"T           E           T", #
-"T                       T",
+"TTTT                    T",
+"TTTT                    T", #
+"TTTT                    T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
              #
-
-Level_4 = [
-"TTTTTTTTTTTTTTTTTTTTTTTTT", #
-"T                       T",
-"T                       T", #
-"T                    P  T",
-"T        TTTTTTT        T", #
-"T   E    T              T",
-"T        T              T", #
-"T                       T",
-"T            E          T", ##
-"T                       T",
-"T        T              T", #
-"T        T              T",
-"T        TTTTTTT        T", #
-"T                       T",
-"T           E           T", #
-"T                       T",
-"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
- # # # # # # # # # # # # #
-             #
-
-Level_5 = [
-"TTTTTTTTTTTTTTTTTTTTTTTTT", #
-"T                       T",
-"T                       T", #
-"T                       T",
-"T   E               P   T", #
-"T                       T",
-"TTTT                 TTTT", #
-"TTTT       TTT       TTTT",
-"TTTT       TTT       TTTT", ##
-"TTTT       TTT       TTTT",
-"TTTT                 TTTT", #
-"T                       T",
-"T   E               E   T", #
-"T                       T",
-"T                       T", #
-"T                       T",
-"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
- # # # # # # # # # # # # #
-
-Level_6 = [
-"TTTTTTTTTTTTTTTTTTTTTTTTT", #
-"T                       T",
-"T                       T", #
-"T                       T",
-"T                       T", #
-"T                       T",
-"T                    E  T", #
-"T                       T",
-"T   P                   T", ##
-"T                       T",
-"T                    E  T", #
-"T                       T",
-"T                       T", #
-"T                       T",
-"T                       T", #
-"T                       T",
-"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
- # # # # # # # # # # # # #

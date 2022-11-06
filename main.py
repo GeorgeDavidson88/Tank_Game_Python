@@ -1,3 +1,4 @@
+# import
 import pygame
 import sys
 import time
@@ -8,6 +9,7 @@ from levels import *
  
 pygame.init()
 
+# window
 WIN_WIDTH = 1200
 WIN_HEIGHT = 816
 WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
@@ -19,6 +21,7 @@ pygame.display.set_icon(pygame.image.load(
 
 pygame.mouse.set_visible(False)
 
+# colours
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
@@ -27,30 +30,27 @@ YELLOW = (255, 255, 0)
 CYAN = (0, 255, 255)
 PURPLE = (255, 0, 255)
 
+ORANGE = (255, 165, 0)
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-GRAY_1 = (128, 128, 128)
-GRAY_2 = (64, 64, 64)
-GRAY_3 = (32, 32, 32)
+GRAY = (32, 32, 32)
 
+# sprite groups
 player_group = pygame.sprite.GroupSingle()
-
 barral_group = pygame.sprite.GroupSingle()
-
 enemy_group = pygame.sprite.Group()
-
 player_bullet_group = pygame.sprite.Group()
-
 enemy_bullet_group = pygame.sprite.Group()
-
 tile_group = pygame.sprite.Group()
+effect_group = pygame.sprite.Group()
 
-explosion_group = []
+# fonts
+font_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
+font_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
-font_1 = pygame.font.Font(os.path.join("font", "jersey_M54.ttf"), 42)
-font_2 = pygame.font.Font(os.path.join("font", "jersey_M54.ttf"), 86)
-
+# text
 space_to_start_font = font_1.render("Press Space To Start", True, WHITE)
 space_to_start_font_rect = space_to_start_font.get_rect(center=(WIN_WIDTH / 2, WIN_WIDTH / 2))
 
@@ -60,28 +60,26 @@ successful_font_rect = successful_font.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGH
 failed_font = font_2.render("Failed", True, RED)
 failed_font_rect = failed_font.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
 
-shoot_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(shoot_timer, 300)
-
-player_shoot_timer = pygame.USEREVENT + 2
-pygame.time.set_timer(player_shoot_timer, 150)
-
     
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
-        self.speed = 160
+        self.speed = 125
     
         self.width = 48
         self.height = self.width
     
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill(BLUE)
-    
+
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
     
         self.vector2 = pygame.math.Vector2(0, 0)
+
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
+
+        self.player_shoot_delay = 0.2
+        self.player_shoot_timer = self.player_shoot_delay
 
     def horizontal_collisions(self):
         for sprite in tile_group.sprites():
@@ -116,7 +114,7 @@ class Player(pygame.sprite.Sprite):
             self.vector2.x = 0
 
         self.rect_pos.x += self.vector2.x * self.speed * delta_time
-        self.rect.x = self.rect_pos.x
+        self.rect.x = round(self.rect_pos.x)
 
     def vertical_movement(self, delta_time):
         self.key = pygame.key.get_pressed()
@@ -129,7 +127,23 @@ class Player(pygame.sprite.Sprite):
             self.vector2.y = 0
 
         self.rect_pos.y += self.vector2.y * self.speed * delta_time
-        self.rect.y = self.rect_pos.y
+        self.rect.y = round(self.rect_pos.y)
+
+    def shoot(self, delta_time):
+        pressed = pygame.mouse.get_pressed()
+
+        if pressed[0]:
+            if self.player_shoot_timer < 0:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+
+                target = player_group.sprite.rect.center
+                
+                bullet = Bullet(BLUE, CYAN, enemy_group, target, (mouse_x, mouse_y))
+                player_bullet_group.add(bullet)
+
+                self.player_shoot_timer = self.player_shoot_delay
+        
+        self.player_shoot_timer -= delta_time
 
     def update(self, delta_time):
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -140,12 +154,14 @@ class Player(pygame.sprite.Sprite):
         self.vertical_movement(delta_time)
         self.vertical_collisions()
 
+        self.shoot(delta_time)
+
         pygame.draw.line(WIN, BLUE, (self.rect.x + (self.width / 2), self.rect.y + (self.height / 2)), (mouse_x, mouse_y), 10)
         pygame.draw.circle(WIN, BLUE, (mouse_x, mouse_y), 8)
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y):
+    def __init__(self, colour, shoot_delay, pos_x, pos_y):
         super().__init__()
         self.speed = random.randint(50, 150)
  
@@ -153,17 +169,20 @@ class Enemy(pygame.sprite.Sprite):
         self.height = self.width
  
         self.image = pygame.Surface((self.width, self.height))
-        self.image.fill(RED)
+        self.image.fill(colour)
  
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
  
         self.vector2 = pygame.math.Vector2(0, 0)
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
 
-        list = [-1, 1]
+        self.shoot_delay = shoot_delay
+        self.shoot_timer = random.randint(1, 10) / 10
+       
+        start_direction = [-1, 1]
 
-        self.vector2.x = random.choice(list)
-        self.vector2.y = random.choice(list)
+        self.vector2.x = random.choice(start_direction)
+        self.vector2.y = random.choice(start_direction)
  
     def horizontal_collisions(self):
         for sprite in tile_group.sprites():
@@ -193,11 +212,23 @@ class Enemy(pygame.sprite.Sprite):
  
     def horizontal_movement(self, delta_time):
         self.rect_pos.x += self.vector2.x * self.speed * delta_time
-        self.rect.x = self.rect_pos.x
+        self.rect.x = round(self.rect_pos.x)
  
     def vertical_movement(self, delta_time):
         self.rect_pos.y += self.vector2.y * self.speed * delta_time
-        self.rect.y = self.rect_pos.y
+        self.rect.y = round(self.rect_pos.y)
+
+    def shoot(self, delta_time):
+        self.shoot_timer -= delta_time
+
+        if self.shoot_timer < 0:
+            for sprites in player_group.sprites():
+                player_center_x, player_center_y = sprites.rect.center
+            
+            bullet = Bullet(RED, ORANGE, player_group, self.rect.center, (player_center_x + random.randint(-100, 100), player_center_y + random.randint(-100, 100)))
+            enemy_bullet_group.add(bullet)
+            
+            self.shoot_timer = self.shoot_delay
 
     def update(self, delta_time):
         self.horizontal_movement(delta_time)
@@ -206,24 +237,31 @@ class Enemy(pygame.sprite.Sprite):
         self.vertical_movement(delta_time)
         self.vertical_collisions()
 
+        self.shoot(delta_time)
+
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, group, colour_1, colour_2, start, target_x, target_y):
+    def __init__(self, colour_1, colour_2, kill_group, start_pos, target_pos):
         super().__init__()
-        self.group = group
+        self.group = kill_group
+
+        self.colour_1 = colour_1
+        self.colour_2 = colour_2
 
         self.bullet_speed = 225
  
         self.max_bounces = 1
  
-        self.width = 18
+        self.width = 20
         self.height = self.width
 
         self.image = pygame.Surface((self.width, self.height))
  
-        self.rect = self.image.get_rect(center=(start))
+        self.rect = self.image.get_rect(center=start_pos)
  
         self.x_center, self.y_center = self.rect.center
+
+        target_x, target_y = target_pos
  
         self.rise = target_x - self.x_center
         self.run = target_y - self.y_center
@@ -234,9 +272,6 @@ class Bullet(pygame.sprite.Sprite):
         self.delta_x = math.cos(self.angle) * self.bullet_speed
  
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
-
-        self.colour_1 = colour_1
-        self.colour_2 = colour_2
  
         self.bounce_index = 0
 
@@ -266,13 +301,11 @@ class Bullet(pygame.sprite.Sprite):
 
         for sprite in self.group.sprites():
             if self.rect.colliderect(sprite):
+                effect = Effect(ORANGE, YELLOW, 112, 128, self.rect.x + (self.width / 2), self.rect.y + (self.height / 2))
+                effect_group.add(effect)
+
                 sprite.kill()
                 Bullet.kill(self)
-
-        if self.bounce_index > self.max_bounces:
-            Bullet.kill(self)
-            explosion = Explosion(self.colour_1, self.colour_2, 24, self.rect_pos.x + self.width / 2, self.rect_pos.y + self.height / 2)
-            explosion_group.append(explosion)
  
     def movement(self, delta_time):
         self.rect_pos.x += self.delta_x * delta_time
@@ -281,12 +314,25 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x = round(self.rect_pos.x)
         self.rect.y = round(self.rect_pos.y)
 
+    def explode_bullet(self):
+        if self.bounce_index > self.max_bounces:
+            effect = Effect(ORANGE, YELLOW, 32, 64, self.rect.x + (self.width / 2), self.rect.y + (self.height / 2))
+            effect_group.add(effect)
+            
+            self.colour_1 = YELLOW
+            self.colour_2 = YELLOW
+
+            Bullet.kill(self)
+    
+    def fake_bullet(self):
+        effect = Effect(self.colour_1, self.colour_2, 16, 64, self.rect.x + (self.width / 2), self.rect.y + (self.height / 2))
+        effect_group.add(effect)
+
     def update(self, delta_time):
         self.collisions()
+        self.explode_bullet()
+        self.fake_bullet()
         self.movement(delta_time)
-
-        explosion = Explosion(self.colour_1, self.colour_2, 16, self.rect_pos.x + self.width / 2, self.rect_pos.y + self.height / 2)
-        explosion_group.append(explosion)
 
 
 class Tile(pygame.sprite.Sprite):
@@ -301,42 +347,46 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
 
 
-class Level():
+class Effect(pygame.sprite.Sprite):
+    def __init__(self, colour_1, colour_2, radius, speed, pos_x, pos_y):
+        super().__init__()
+        self.radius = radius
+
+        self.colour_1 = colour_1
+        self.colour_2 = colour_2
+
+        self.speed = speed
+
+        self.width = 0
+        self.height = self.width
+
+        self.image = pygame.Surface((self.width, self.height))
+
+        self.rect = self.image.get_rect(center=(pos_x, pos_y))
+
+    def draw(self):
+        self.circle = pygame.draw.circle(WIN, self.colour_1, (self.rect.x, self.rect.y), self.radius)
+        self.circle = pygame.draw.circle(WIN, self.colour_2, (self.rect.x, self.rect.y), self.radius / 2)
+
+    def scale(self, delta_time):
+        if self.radius > 4:
+            self.radius -= delta_time * self.speed
+        else:
+            effect_group.remove(self)
+    
+    def update(self, delta_time):
+        self.scale(delta_time)
+        self.draw()
+
+
+class Game():
     def __init__(self):
         self.current_level = 0
-        self.game_active = True
 
-    def level_loader(self):
-        if len(enemy_group) == 0:
-            self.current_level += 1
+        self.game_active = False
+        self.game_just_started = True
 
-            if self.current_level == 1:
-                self.clear()
-                self.setup(Level_6)
-            
-            if self.current_level == 2:
-                self.clear()
-                self.setup(Level_2)
-
-            if self.current_level == 3:
-                self.clear()
-                self.setup(Level_3)
-
-            if self.current_level == 4:
-                self.game_active = False
-    
-    def clear(self):
-        player_group.empty()
-
-        enemy_group.empty()
-
-        player_bullet_group.empty()
-
-        enemy_bullet_group.empty()
-
-        tile_group.empty()
-
-    def setup(self, level_data):
+    def level_setup(self, level_data):
         for row_index, row in enumerate(level_data):
             for col_index, cell in enumerate(row):
                 x = col_index * 48
@@ -351,164 +401,125 @@ class Level():
                     player_group.add(player)
 
                 if cell == "E":
-                    enemy = Enemy(x, y)
+                    enemy = Enemy(RED, 0.5, x, y)
                     enemy_group.add(enemy)
 
+    def level_clear(self):
+        player_group.empty()
+        enemy_group.empty()
+        player_bullet_group.empty()
+        enemy_bullet_group.empty()
+        tile_group.empty()
 
-class Explosion():
-    def __init__(self, colour_1, colour_2, radius, pos_x, pos_y):
-        self.radius = radius
+    def load_level(self):
+        if len(enemy_group) == 0:
 
-        self.pos_x = pos_x
-        self.pos_y = pos_y
+            self.current_level += 1
 
-        self.colour_1 = colour_1
-        self.colour_2 = colour_2
+            if self.current_level == 1:
+                self.level_clear()
+                self.level_setup(level_1)
+            
+            if self.current_level == 2:
+                self.level_clear()
+                self.level_setup(level_2)
+
+            if self.current_level == 3:
+                self.level_clear()
+                self.level_setup(level_3)
+
+        if self.current_level == 4:
+            self.game_active = False
+
+    def bullet_bullet_collisions(self):
+        for player_bullet_sprite in player_bullet_group.sprites():
+            for enemy_bullet_sprite in enemy_bullet_group.sprites():
+                if player_bullet_sprite.rect.colliderect(enemy_bullet_sprite.rect):
+                    effect = Effect(ORANGE, YELLOW, 32, 64, player_bullet_sprite.rect.x + (player_bullet_sprite.width / 2), player_bullet_sprite.rect.y + (player_bullet_sprite.height / 2))
+                    effect_group.add(effect)
+
+                    effect = Effect(ORANGE, YELLOW, 32, 64, enemy_bullet_sprite.rect.x + (enemy_bullet_sprite.width / 2), enemy_bullet_sprite.rect.y + (enemy_bullet_sprite.height / 2))
+                    effect_group.add(effect)
+
+                    player_bullet_sprite.kill()
+                    enemy_bullet_sprite.kill()
+        
+        self.game_just_started = False
+
+    def player_bullet_collisions(self):
+        try:
+            for sprite in enemy_group.sprites():
+                if sprite.rect.colliderect(player_group.sprite.rect):
+                    self.game_active = False
+        except:
+            self.game_active = False
 
     def draw(self):
-        self.circle_1 = pygame.draw.circle(WIN, self.colour_1, (self.pos_x, self.pos_y), self.radius)
-        self.circle_2 = pygame.draw.circle(WIN, self.colour_2, (self.pos_x, self.pos_y), self.radius - (self.radius / 2))
+        WIN.fill(GRAY)
 
-    def scale(self, delta_time):
-        if self.radius > 4:
-            self.radius -= delta_time * 64
-        else:
-            explosion_group.remove(explosion_group[0])
-    
+        player_group.draw(WIN)
+        enemy_group.draw(WIN)
+        tile_group.draw(WIN)
+        effect_group.draw(WIN)
+
+    def menu(self):
+        WIN.fill(GRAY)
+
+        self.level_clear()
+
+        WIN.blit(space_to_start_font, (space_to_start_font_rect))
+
+        if self.current_level == 4:
+            WIN.blit(successful_font, successful_font_rect)
+        elif not self.current_level == 4 and not self.game_just_started:
+            WIN.blit(failed_font, failed_font_rect)
+
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        pygame.draw.circle(WIN, BLUE, (mouse_x, mouse_y), 8)
+
     def update(self, delta_time):
-        self.scale(delta_time)
-        self.draw()
+        if self.game_active:
+            self.draw()
+            self.load_level()
+            self.bullet_bullet_collisions()
+            self.player_bullet_collisions()
 
+            player_group.update(delta_time)
+            enemy_group.update(delta_time)
+            player_bullet_group.update(delta_time)
+            enemy_bullet_group.update(delta_time)
+            effect_group.update(delta_time)
+        else:
+            self.menu()
 
-def update(delta_time):
-    player_group.update(delta_time)
-    enemy_group.update(delta_time)
-    player_bullet_group.update(delta_time)
-    enemy_bullet_group.update(delta_time)
-
-    player_bullet_group.draw(WIN)
-    enemy_bullet_group.draw(WIN)
-    player_group.draw(WIN)
-    enemy_group.draw(WIN)
-    tile_group.draw(WIN)
-
-    for explosion in explosion_group:
-        explosion.update(delta_time)
+        pygame.display.update()
 
 
 def main():
     previous_time = time.time()
-    level = Level()
 
-    game_active = False
-    can_shoot = False
-    just_dided = False
-    just_started = True
+    game = Game()
 
     while True:
         delta_time = time.time() - previous_time
         previous_time = time.time()
 
         for event in pygame.event.get():
- 
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
  
             if event.type == pygame.KEYDOWN:
- 
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
 
                 if event.key == pygame.K_SPACE:
-                    game_active = True
- 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_button = pygame.mouse.get_pressed()
-                
-                if mouse_button[0]:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    if not game.game_active:
+                        game.current_level = 0
+                        game.game_active = True
 
-                    explosion = Explosion(BLUE, BLUE, 12, mouse_x, mouse_y)
-                    explosion_group.append(explosion)
- 
-                    if game_active:
-                        if can_shoot:
-                            target = player_group.sprite.rect.center
-                            
-                            bullet = Bullet(enemy_group, BLUE, CYAN, target, mouse_x, mouse_y)
-                            player_bullet_group.add(bullet)
-
-                            can_shoot = False
-
-            if game_active:
-                if event.type == shoot_timer:
-                    for sprites in player_group.sprites():
-                        player_center_x, player_center_y = sprites.rect.center
-                    
-                    for sprites in enemy_group.sprites():
-                        target = sprites.rect.center
-                    
-                        bullet = Bullet(player_group, RED, YELLOW, target, player_center_x + random.randint(-200, 200), player_center_y + random.randint(-200, 200))
-                        enemy_bullet_group.add(bullet)
-                        
-                if not can_shoot:
-                    if event.type == player_shoot_timer:
-                        can_shoot = True
-
-        if game_active:
-            level.level_loader()
-
-            WIN.fill(GRAY_3)
-
-            update(delta_time)
-
-            try:
-                for sprite in enemy_group.sprites():
-                    if sprite.rect.colliderect(player_group.sprite.rect):
-                        game_active = False
-                        just_dided = True
-
-            except:
-                game_active = False
-                just_dided = True
-            
-            if not level.game_active:
-                game_active = False
-                just_dided = False
-
-            for player_bullet_sprite in player_bullet_group.sprites():
-                for enemy_bullet_sprite in enemy_bullet_group.sprites():
-                    if player_bullet_sprite.rect.colliderect(enemy_bullet_sprite.rect):
-                        player_bullet_sprite.kill()
-                        enemy_bullet_sprite.kill()
-
-            just_started = False
-
-        else:
-            WIN.fill(GRAY_3)
-
-            for explosion in explosion_group:
-                explosion.update(delta_time)
-
-            level.clear()
-
-            level.current_level = 0
-            level.game_active = True
-
-            WIN.blit(space_to_start_font, (space_to_start_font_rect))
-
-            if just_dided:
-                WIN.blit(failed_font, (failed_font_rect))
-            elif not just_dided and not just_started:
-                WIN.blit(successful_font, (successful_font_rect))
-
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-
-            pygame.draw.circle(WIN, BLUE, (mouse_x, mouse_y), 8)
-                
-        pygame.display.update()
+        game.update(delta_time)
 
 if __name__ == "__main__":
     main()
