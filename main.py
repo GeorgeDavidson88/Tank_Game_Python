@@ -29,7 +29,6 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 CYAN = (0, 255, 255)
 PURPLE = (255, 0, 255)
-
 ORANGE = (255, 165, 0)
 
 WHITE = (255, 255, 255)
@@ -179,10 +178,12 @@ class Enemy(pygame.sprite.Sprite):
         self.shoot_delay = shoot_delay
         self.shoot_timer = random.randint(1, 10) / 10
        
-        start_direction = [-1, 1]
+        self.direction_list = [-1, 1]
 
-        self.vector2.x = random.choice(start_direction)
-        self.vector2.y = random.choice(start_direction)
+        self.direction_change_timer = random.randint(2, 5)
+
+        self.vector2.x = random.choice(self.direction_list)
+        self.vector2.y = random.choice(self.direction_list)
  
     def horizontal_collisions(self):
         for sprite in tile_group.sprites():
@@ -230,6 +231,16 @@ class Enemy(pygame.sprite.Sprite):
             
             self.shoot_timer = self.shoot_delay
 
+    def direction_change(self, delta_time):
+        self.direction_change_timer -= delta_time
+
+        if self.direction_change_timer < 0:
+            self.vector2.x = random.choice(self.direction_list)
+            self.vector2.y = random.choice(self.direction_list)
+
+            self.direction = random.choice(self.direction_list)
+            self.direction_change_timer = self.direction_change_timer = random.randint(2, 5)
+
     def update(self, delta_time):
         self.horizontal_movement(delta_time)
         self.horizontal_collisions()
@@ -237,6 +248,7 @@ class Enemy(pygame.sprite.Sprite):
         self.vertical_movement(delta_time)
         self.vertical_collisions()
 
+        self.direction_change(delta_time)
         self.shoot(delta_time)
 
 
