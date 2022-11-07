@@ -333,8 +333,8 @@ class Bullet(pygame.sprite.Sprite):
 
         for sprite in self.kill_group.sprites():
             if self.rect.colliderect(sprite):
-                trail_effect = Trail_Effect(ORANGE, YELLOW, 88, 148, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
-                trail_effect_group.add(trail_effect)
+                exploded = Trail_Effect(ORANGE, YELLOW, 88, 148, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
+                trail_effect_group.add(exploded)
 
                 sprite.kill()
                 Bullet.kill(self)
@@ -348,11 +348,11 @@ class Bullet(pygame.sprite.Sprite):
 
     def explode_bullet(self):
         if self.bounce_index > self.max_bounces:
-            trail_effect = Trail_Effect(ORANGE, YELLOW, 32, 64, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
-            trail_effect_group.add(trail_effect)
-            
-            self.colour_1 = YELLOW
-            self.colour_2 = YELLOW
+            self.bullet_colour_1 = YELLOW
+            self.bullet_colour_2 = YELLOW
+
+            exploded = Trail_Effect(ORANGE, YELLOW, 32, 64, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
+            trail_effect_group.add(exploded)
 
             Bullet.kill(self)
     
@@ -436,8 +436,11 @@ class Game():
         self.failed_text = font_2.render("Failed", True, RED)
         self.failed_text_rect = self.failed_text.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
 
-        self.current_time_text = font_1.render(f"| Time: {round(self.current_time, 1)}", True, BLACK)
-        self.current_time_text_rect = self.current_time_text.get_rect(topleft=(0 + 48, 0))
+        self.current_level_text = font_1.render(f"| Level: {self.current_level}", True, BLACK)
+        self.current_level_text_rect = self.current_level_text.get_rect(topleft=(0 + 48, 0))
+
+        self.current_time_text = font_1.render(f" | Time: {round(self.current_time, 1)}", True, BLACK)
+        self.current_time_text_rect = self.current_time_text.get_rect(topleft=(self.current_level_text_rect.topright))
 
         self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
         self.fastest_time_text_rect = self.fastest_time_text.get_rect(topright=(WIN_WIDTH - 48, 0))
@@ -457,7 +460,7 @@ class Game():
                     collision_tile_group.add(tile)
 
                 if cell == "P":
-                    player = Player(BLUE, 48, 120, 0.28, BLUE, CYAN, 260, 1, 16, x, y)
+                    player = Player(BLUE, 48, 120, 0.2, BLUE, CYAN, 260, 1, 16, x, y)
                     player_group.add(player)
 
                 if cell == "A":
@@ -495,18 +498,21 @@ class Game():
     def timer(self, delta_time):
         self.current_time += delta_time
 
-        self.current_time_text = font_1.render(f"| Time: {round(self.current_time, 1)}", True, BLACK)
-        self.current_time_text_rect = self.current_time_text.get_rect(topleft=(48, 0))
+        self.current_time_text = font_1.render(f" | Time: {round(self.current_time, 1)}", True, BLACK)
+        self.current_time_text_rect = self.current_time_text.get_rect(topleft=(self.current_level_text_rect.topright))
+
+        self.current_level_text = font_1.render(f"| Level: {self.current_level}", True, BLACK)
+        self.current_level_text_rect = self.current_level_text.get_rect(topleft=(0 + 48, 0))
 
     def bullet_bullet_collisions(self):
         for player_bullet_sprite in player_bullet_group.sprites():
             for enemy_bullet_sprite in enemy_bullet_group.sprites():
                 if player_bullet_sprite.rect.colliderect(enemy_bullet_sprite.rect):
-                    trail_effect = Trail_Effect(ORANGE, YELLOW, 32, 64, player_bullet_sprite.rect.x + (player_bullet_sprite.width / 2), player_bullet_sprite.rect.y + (player_bullet_sprite.height / 2))
-                    trail_effect_group.add(trail_effect)
+                    exploded = Trail_Effect(ORANGE, YELLOW, 32, 64, player_bullet_sprite.rect.x + (player_bullet_sprite.width / 2), player_bullet_sprite.rect.y + (player_bullet_sprite.height / 2))
+                    trail_effect_group.add(exploded)
 
-                    trail_effect = Trail_Effect(ORANGE, YELLOW, 32, 64, enemy_bullet_sprite.rect.x + (enemy_bullet_sprite.width / 2), enemy_bullet_sprite.rect.y + (enemy_bullet_sprite.height / 2))
-                    trail_effect_group.add(trail_effect)
+                    exploded = Trail_Effect(ORANGE, YELLOW, 32, 64, enemy_bullet_sprite.rect.x + (enemy_bullet_sprite.width / 2), enemy_bullet_sprite.rect.y + (enemy_bullet_sprite.height / 2))
+                    trail_effect_group.add(exploded)
 
                     player_bullet_sprite.kill()
                     enemy_bullet_sprite.kill()
@@ -566,6 +572,7 @@ class Game():
 
         WIN.blit(self.current_time_text, self.current_time_text_rect)
         WIN.blit(self.fastest_time_text, self.fastest_time_text_rect)
+        WIN.blit(self.current_level_text, self.current_level_text_rect)
 
 
 def main():
