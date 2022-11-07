@@ -1,6 +1,7 @@
 # T = Tile
 # P = Player
-# E = Enemy
+
+# A = Tank level 1
 
 level_1 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
@@ -11,7 +12,7 @@ level_1 = [
 "T                       T",
 "T         TTTTT         T", #
 "T         TTTTT         T",
-"T  P      TTTTT      E  T", ##
+"T  P      TTTTT      A  T", ##
 "T         TTTTT         T",
 "T         TTTTT         T", #
 "T                       T",
@@ -30,7 +31,7 @@ level_2 = [
 "T                       T",
 "T                       T", #
 "T                       T",
-"T    TTTT          E    T", #
+"T    TTTT          A    T", #
 "T    TTTT               T",
 "T    TTTT       TTTT    T", ##
 "T               TTTT    T",
@@ -48,17 +49,17 @@ level_3 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "TTTT                    T",
 "TTTT                    T", #
-"TTTT                    T",
+"TTTT  A                 T",
 "T                       T", #
 "T                       T",
-"T    E            T     T", #
+"T                 T     T", #
 "T                 T     T",
 "T                 T  P  T", ##
 "T                 T     T",
-"T    E            T     T", #
+"T                 T     T", #
 "T                       T",
 "T                       T", #
-"TTTT                    T",
+"TTTT  A                 T",
 "TTTT                    T", #
 "TTTT                    T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
