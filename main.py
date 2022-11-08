@@ -243,9 +243,13 @@ class Enemy(pygame.sprite.Sprite):
         if self.shoot_timer < 0:
             for sprites in player_group.sprites():
                 player_center_x, player_center_y = sprites.rect.center
-            
-            bullet = Bullet(self.bullet_colour_1, self.bullet_colour_2, self.bullet_speed, self.bullet_max_bounces, self.bullet_size , player_group, self.rect.center, (player_center_x + random.randint(-100, 100), player_center_y + random.randint(-100, 100)))
-            enemy_bullet_group.add(bullet)
+
+            try:
+                bullet = Bullet(self.bullet_colour_1, self.bullet_colour_2, self.bullet_speed, self.bullet_max_bounces, self.bullet_size , player_group, self.rect.center, (player_center_x + random.randint(-100, 100), player_center_y + random.randint(-100, 100)))
+                enemy_bullet_group.add(bullet)
+            except:
+                bullet = Bullet(self.bullet_colour_1, self.bullet_colour_2, self.bullet_speed, self.bullet_max_bounces, self.bullet_size , player_group, self.rect.center, (random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT)))
+                enemy_bullet_group.add(bullet)
             
             self.shoot_timer = self.shoot_delay
 
@@ -419,10 +423,14 @@ class Game():
         self.fastest_time = math.inf
 
         self.game_active = False
-        self.game_just_started = True
-        self.player_just_died = True
 
-        self.level_swich_timer = 1
+        self.game_just_started = True
+        self.game_finished = False
+
+        self.is_dead = False
+
+        self.transition_delay = 1
+        self.transition_timer = self.transition_delay
 
         self.gray_colour_list = [GRAY_1, GRAY_2, GRAY_3]
         self.white_colour_list = [WHITE_1, WHITE_2, WHITE_3]
@@ -477,23 +485,33 @@ class Game():
         trail_effect_group.empty()
         explosion_effect_group.empty()
 
-    def load_level(self):
+    def load_level(self, delta_time):
         if len(enemy_group) == 0:
-            if self.current_level == 3:
-                self.game_active = False
-                self.player_just_died = False
-            else:
+            if self.game_just_started:
                 self.level_clear()
                 self.current_level += 1
 
-            if self.current_level == 1:
-                self.level_setup(level_1)
-            
-            if self.current_level == 2:
-                self.level_setup(level_2)
+                if self.current_level == 1:
+                    self.level_setup(level_1)
 
-            if self.current_level == 3:
-                self.level_setup(level_3)
+                self.game_just_started = False
+            else:
+                self.transition_timer -= delta_time
+                if self.transition_timer < 0:
+                    if self.current_level == 3:
+                        self.game_finished = True
+                        self.game_active = False
+                    else:
+                        self.level_clear()
+                        self.current_level += 1
+                        
+                        if self.current_level == 2:
+                            self.level_setup(level_2)
+
+                        if self.current_level == 3:
+                            self.level_setup(level_3)
+
+                    self.transition_timer = self.transition_delay
 
     def timer(self, delta_time):
         self.current_time += delta_time
@@ -517,15 +535,19 @@ class Game():
                     player_bullet_sprite.kill()
                     enemy_bullet_sprite.kill()
 
-    def player_bullet_collisions(self):
+    def player_bullet_collisions(self, delta_time):
         if len(player_group) == 0:
-            self.player_just_died = True
-            self.game_active = False
-    
+            self.transition_timer -= delta_time
+
+            if self.transition_timer < 0:
+                self.game_active = False
+
+                self.transition_timer = self.transition_delay
+
     def menu_text(self):
         WIN.blit(self.space_to_start_text, self.space_to_start_text_rect)
 
-        if self.current_level == 3 and not self.player_just_died:
+        if self.current_level == 3 and self.game_finished:
             WIN.blit(self.successful_text, self.successful_text_rect)
 
             if self.current_time < self.fastest_time:
@@ -534,7 +556,7 @@ class Game():
                 self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
                 self.fastest_time_text_rect = self.fastest_time_text.get_rect(topright=(WIN_WIDTH - 48, 0))
 
-        elif not self.game_just_started:
+        elif not self.game_finished and not self.game_just_started:
             WIN.blit(self.failed_text, self.failed_text_rect)
 
     def game_update(self, delta_time):
@@ -551,13 +573,10 @@ class Game():
         explosion_effect_group.update(delta_time)
 
         self.timer(delta_time)
-
-        self.load_level()
+        self.load_level(delta_time)
 
         self.bullet_bullet_collisions()
-        self.player_bullet_collisions()
-
-        self.game_just_started = False
+        self.player_bullet_collisions(delta_time)
 
     def menu_update(self):
         WIN.fill(WHITE_1)
@@ -600,7 +619,13 @@ def main():
                         
                         game.current_time = 0
                         game.current_level = 0
+
+                        game.game_just_started = True
+                        game.game_finished = False
+
                         game.game_active = True
+
+                        game.is_dead = False
 
         game.update(delta_time)
 
