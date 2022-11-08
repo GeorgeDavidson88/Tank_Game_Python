@@ -35,13 +35,13 @@ DARK_GREEN = (0, 128, 0)
 BROWN = (140,70,20)
 
 # shades
-WHITE_1 = (255, 255, 255)
-WHITE_2 = (247, 247, 247)
-WHITE_3 = (239, 239, 239)
+WHITE_1 = (189 + 32,154 + 32,122 + 32)
+WHITE_2 = (197 + 32,162 + 32,130 + 32)
+WHITE_3 = (205 + 32,170 + 32,138 + 32)
 
-GRAY_1 = (112, 112, 112)
-GRAY_2 = (120, 120, 120)
-GRAY_3 = (128, 128, 128)
+GRAY_1 = (98,52,18)
+GRAY_2 = (106,60,26)
+GRAY_3 = (114,68,34)
 
 DARK_GRAY = (64, 64, 64)
 
@@ -55,8 +55,7 @@ player_bullet_group = pygame.sprite.Group()
 enemy_bullet_group = pygame.sprite.Group()
 collision_tile_group = pygame.sprite.Group()
 backgound_tile_group = pygame.sprite.Group()
-explosion_effect_group = pygame.sprite.Group()
-trail_effect_group = pygame.sprite.Group()
+partical_effect_group = pygame.sprite.Group()
 
 # fonts
 font_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
@@ -64,9 +63,9 @@ font_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
     
 class Player(pygame.sprite.Sprite):
-    def __init__(self, colour, size, speed, shoot_delay, bullet_colour_1, bullet_colour_2, bullet_speed, bullet_max_bounces, bullet_size, pos_x, pos_y):
+    def __init__(self, colour_1, size, speed, shoot_delay, bullet_colour_1, bullet_colour_2, bullet_speed, bullet_max_bounces, bullet_size, pos_x, pos_y):
         super().__init__()
-        self.colour = colour
+        self.colour_1 = colour_1
 
         self.width = size
         self.height = size
@@ -155,7 +154,8 @@ class Player(pygame.sprite.Sprite):
         self.shoot_timer -= delta_time
 
     def update(self, delta_time):
-        pygame.draw.rect(WIN, self.colour, (self.rect.x, self.rect.y, self.width, self.height), 0, 8)
+        pygame.draw.rect(WIN, self.colour_1, (self.rect.x, self.rect.y, self.width, self.height), 0, 8)
+        
 
         self.horizontal_movement(delta_time)
         self.horizontal_collisions()
@@ -337,8 +337,11 @@ class Bullet(pygame.sprite.Sprite):
 
         for sprite in self.kill_group.sprites():
             if self.rect.colliderect(sprite):
-                exploded = Trail_Effect(ORANGE, YELLOW, 88, 148, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
-                trail_effect_group.add(exploded)
+                self.bullet_colour_1 = YELLOW
+                self.bullet_colour_2 = YELLOW
+
+                exploded = ParticalEffect(ORANGE, YELLOW, 88, 148, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
+                partical_effect_group.add(exploded)
 
                 sprite.kill()
                 Bullet.kill(self)
@@ -355,14 +358,14 @@ class Bullet(pygame.sprite.Sprite):
             self.bullet_colour_1 = YELLOW
             self.bullet_colour_2 = YELLOW
 
-            exploded = Trail_Effect(ORANGE, YELLOW, 32, 64, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
-            trail_effect_group.add(exploded)
+            exploded = ParticalEffect(ORANGE, YELLOW, 32, 64, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
+            partical_effect_group.add(exploded)
 
             Bullet.kill(self)
     
     def fake_bullet(self):
-        trail_effect = Trail_Effect(self.bullet_colour_1, self.bullet_colour_2, self.width, 64, self.rect_pos.x + self.width / 2, self.rect_pos.y + self.height / 2)
-        trail_effect_group.add(trail_effect)
+        trail_effect = ParticalEffect(self.bullet_colour_1, self.bullet_colour_2, self.width,  65, self.rect_pos.x + self.width / 2, self.rect_pos.y + self.height / 2)
+        partical_effect_group.add(trail_effect)
 
     def update(self, delta_time):
         self.collisions()
@@ -383,7 +386,7 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
 
 
-class Trail_Effect(pygame.sprite.Sprite):
+class ParticalEffect(pygame.sprite.Sprite):
     def __init__(self, colour_1, colour_2, radius, srink_speed, pos_x, pos_y):
         super().__init__()
         self.radius = radius
@@ -400,19 +403,17 @@ class Trail_Effect(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center=(pos_x, pos_y))
 
-    def draw_effect(self):
-        self.circle = pygame.draw.circle(WIN, self.colour_1, (self.rect.x, self.rect.y), self.radius)
-        self.circle = pygame.draw.circle(WIN, self.colour_2, (self.rect.x, self.rect.y), self.radius / 2)
-
     def scale_down(self, delta_time):
         if self.radius > 4:
             self.radius -= delta_time * self.srink_speed
         else:
-            trail_effect_group.remove(self)
+            partical_effect_group.remove(self)
     
     def update(self, delta_time):
+        self.circle = pygame.draw.circle(WIN, self.colour_1, (self.rect.x, self.rect.y), self.radius)
+        self.circle = pygame.draw.circle(WIN, self.colour_2, (self.rect.x, self.rect.y), self.radius / 2)
+
         self.scale_down(delta_time)
-        self.draw_effect()
 
 
 class Game():
@@ -437,6 +438,9 @@ class Game():
 
         self.space_to_start_text = font_1.render("Press Space To Start", True, BLACK)
         self.space_to_start_text_rect = self.space_to_start_text.get_rect(center=(WIN_WIDTH / 2, WIN_WIDTH / 2))
+
+        self.space_to_start_text_rect_pos = pygame.math.Vector2(self.space_to_start_text_rect.x, self.space_to_start_text_rect.y)
+        self.space_to_start_text_delta_y = 1
    
         self.successful_text = font_2.render("Successful", True, GREEN)
         self.successful_text_rect = self.successful_text.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
@@ -482,8 +486,7 @@ class Game():
         enemy_bullet_group.empty()
         collision_tile_group.empty()
         backgound_tile_group.empty()
-        trail_effect_group.empty()
-        explosion_effect_group.empty()
+        partical_effect_group.empty()
 
     def load_level(self, delta_time):
         if len(enemy_group) == 0:
@@ -526,11 +529,11 @@ class Game():
         for player_bullet_sprite in player_bullet_group.sprites():
             for enemy_bullet_sprite in enemy_bullet_group.sprites():
                 if player_bullet_sprite.rect.colliderect(enemy_bullet_sprite.rect):
-                    exploded = Trail_Effect(ORANGE, YELLOW, 32, 64, player_bullet_sprite.rect.x + (player_bullet_sprite.width / 2), player_bullet_sprite.rect.y + (player_bullet_sprite.height / 2))
-                    trail_effect_group.add(exploded)
+                    exploded = ParticalEffect(ORANGE, YELLOW, 32, 64, player_bullet_sprite.rect.x + (player_bullet_sprite.width / 2), player_bullet_sprite.rect.y + (player_bullet_sprite.height / 2))
+                    partical_effect_group.add(exploded)
 
-                    exploded = Trail_Effect(ORANGE, YELLOW, 32, 64, enemy_bullet_sprite.rect.x + (enemy_bullet_sprite.width / 2), enemy_bullet_sprite.rect.y + (enemy_bullet_sprite.height / 2))
-                    trail_effect_group.add(exploded)
+                    exploded = ParticalEffect(ORANGE, YELLOW, 32, 64, enemy_bullet_sprite.rect.x + (enemy_bullet_sprite.width / 2), enemy_bullet_sprite.rect.y + (enemy_bullet_sprite.height / 2))
+                    partical_effect_group.add(exploded)
 
                     player_bullet_sprite.kill()
                     enemy_bullet_sprite.kill()
@@ -544,7 +547,35 @@ class Game():
 
                 self.transition_timer = self.transition_delay
 
-    def menu_text(self):
+    def game_update(self, delta_time):
+        WIN.fill(WHITE_1)
+
+        collision_tile_group.draw(WIN)
+        backgound_tile_group.draw(WIN)
+
+        player_group.update(delta_time)
+        enemy_group.update(delta_time)
+        player_bullet_group.update(delta_time) 
+        enemy_bullet_group.update(delta_time)
+        partical_effect_group.update(delta_time)
+
+        self.timer(delta_time)
+        self.load_level(delta_time)
+
+        self.bullet_bullet_collisions()
+        self.player_bullet_collisions(delta_time)
+
+    def menu_update(self, delta_time):
+        WIN.fill(WHITE_1)
+    
+        if self.space_to_start_text_rect_pos.y < 0 + 48 * 12:
+            self.space_to_start_text_delta_y *= -1
+        elif self.space_to_start_text_rect_pos.y > WIN_HEIGHT - 48 * 4:
+            self.space_to_start_text_delta_y *= -1
+        
+        self.space_to_start_text_rect_pos.y += self.space_to_start_text_delta_y * 40 * delta_time
+        self.space_to_start_text_rect.y = round(self.space_to_start_text_rect_pos.y)
+
         WIN.blit(self.space_to_start_text, self.space_to_start_text_rect)
 
         if self.current_level == 3 and self.game_finished:
@@ -559,35 +590,11 @@ class Game():
         elif not self.game_finished and not self.game_just_started:
             WIN.blit(self.failed_text, self.failed_text_rect)
 
-    def game_update(self, delta_time):
-        WIN.fill(WHITE_1)
-
-        collision_tile_group.draw(WIN)
-        backgound_tile_group.draw(WIN)
-
-        player_group.update(delta_time)
-        enemy_group.update(delta_time)
-        player_bullet_group.update(delta_time) 
-        enemy_bullet_group.update(delta_time)
-        trail_effect_group.update(delta_time)
-        explosion_effect_group.update(delta_time)
-
-        self.timer(delta_time)
-        self.load_level(delta_time)
-
-        self.bullet_bullet_collisions()
-        self.player_bullet_collisions(delta_time)
-
-    def menu_update(self):
-        WIN.fill(WHITE_1)
-    
-        self.menu_text()
-
     def update(self, delta_time):
         if self.game_active:
             self.game_update(delta_time)
         else:
-            self.menu_update()
+            self.menu_update(delta_time)
 
         WIN.blit(self.current_time_text, self.current_time_text_rect)
         WIN.blit(self.fastest_time_text, self.fastest_time_text_rect)
