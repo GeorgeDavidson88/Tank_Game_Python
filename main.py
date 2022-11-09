@@ -21,7 +21,7 @@ pygame.display.set_icon(pygame.image.load(
 
 pygame.mouse.set_visible(False)
 
-# colours (255)
+# colours
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
@@ -29,21 +29,17 @@ PURPLE = (255, 0, 255)
 BLUE = (0, 0, 255)
 CYAN = (0, 255, 255)
 
-# colour (random)
 ORANGE = (255, 128, 0)
 DARK_GREEN = (0, 128, 0)
-BROWN = (140,70,20)
 
-# shades
-WHITE_1 = (189 + 32,154 + 32,122 + 32)
-WHITE_2 = (197 + 32,162 + 32,130 + 32)
-WHITE_3 = (205 + 32,170 + 32,138 + 32)
+BROWN_1 = (98,52,18)
+BROWN_2 = (106,60,26)
 
-GRAY_1 = (98,52,18)
-GRAY_2 = (106,60,26)
-GRAY_3 = (114,68,34)
+WHITE_1 = (255, 255, 255)
+WHITE_2 = (239, 239, 239)
 
-DARK_GRAY = (64, 64, 64)
+GRAY_1 = (32, 32, 32)
+GRAY_2 = (40, 40, 40)
 
 BLACK = (0, 0, 0)
 
@@ -55,11 +51,11 @@ player_bullet_group = pygame.sprite.Group()
 enemy_bullet_group = pygame.sprite.Group()
 collision_tile_group = pygame.sprite.Group()
 backgound_tile_group = pygame.sprite.Group()
-partical_effect_group = pygame.sprite.Group()
+partical_list = []
 
 # fonts
-font_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
-font_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
+FONT_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
+FONT_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
     
 class Player(pygame.sprite.Sprite):
@@ -299,10 +295,10 @@ class Bullet(pygame.sprite.Sprite):
 
         target_x, target_y = target_pos
  
-        rise = target_x - center_x
-        run = target_y - center_y
+        self.rise = target_x - center_x
+        self.run = target_y - center_y
 
-        self.angle = math.atan2(run, rise)
+        self.angle = math.atan2(self.run, self.rise)
  
         self.delta_y = math.sin(self.angle) * self.bullet_speed
         self.delta_x = math.cos(self.angle) * self.bullet_speed
@@ -337,14 +333,12 @@ class Bullet(pygame.sprite.Sprite):
 
         for sprite in self.kill_group.sprites():
             if self.rect.colliderect(sprite):
-                self.bullet_colour_1 = YELLOW
-                self.bullet_colour_2 = YELLOW
-
-                exploded = ParticalEffect(ORANGE, YELLOW, 88, 148, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
-                partical_effect_group.add(exploded)
-
                 sprite.kill()
                 Bullet.kill(self)
+
+                for i in range(50):
+                    partical_list.append(Partical(ORANGE, random.randint(self.width, self.width * 2), random.randint(40, 90), random.randint(-500, 500), random.randint(-500, 500), self.rect.x + self.width / 2, self.rect.y + self.height / 2))
+
  
     def movement(self, delta_time):
         self.rect_pos.x += self.delta_x * delta_time
@@ -355,17 +349,13 @@ class Bullet(pygame.sprite.Sprite):
 
     def explode_bullet(self):
         if self.bounce_index > self.max_bounces:
-            self.bullet_colour_1 = YELLOW
-            self.bullet_colour_2 = YELLOW
-
-            exploded = ParticalEffect(ORANGE, YELLOW, 32, 64, self.rect.x + self.width / 2, self.rect.y + self.height / 2)
-            partical_effect_group.add(exploded)
-
             Bullet.kill(self)
+
+            for i in range(50):
+                partical_list.append(Partical(ORANGE,random.randint(self.width, self.width * 2), random.randint(60, 120), random.randint(-250, 250), random.randint(-250, 250), self.rect.x + self.width / 2, self.rect.y + self.height / 2))
     
     def fake_bullet(self):
-        trail_effect = ParticalEffect(self.bullet_colour_1, self.bullet_colour_2, self.width,  65, self.rect_pos.x + self.width / 2, self.rect_pos.y + self.height / 2)
-        partical_effect_group.add(trail_effect)
+        partical_list.append(Partical(self.bullet_colour_1, self.width / 1.8, random.randint(25, 65), random.randint(-30, 30), random.randint(-30, 30), self.rect_pos.x + self.width / 2 + random.randint(-4, 4), self.rect_pos.y + self.height / 2 + random.randint(-4, 4)))
 
     def update(self, delta_time):
         self.collisions()
@@ -384,36 +374,41 @@ class Tile(pygame.sprite.Sprite):
         self.image.fill(random.choice(colour_list))
  
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
+        
 
+class Partical():
+    def __init__(self, colour, radius, srink_speed, x_vel, y_vel, x_pos, y_pos):
+        self.colour = colour
 
-class ParticalEffect(pygame.sprite.Sprite):
-    def __init__(self, colour_1, colour_2, radius, srink_speed, pos_x, pos_y):
-        super().__init__()
         self.radius = radius
 
         self.srink_speed = srink_speed
 
-        self.colour_1 = colour_1
-        self.colour_2 = colour_2
+        self.x_vel = x_vel
+        self.y_vel = y_vel
 
-        self.width = 0
-        self.height = self.width
+        self.x_pos = x_pos
+        self.y_pos = y_pos
 
-        self.image = pygame.Surface((self.width, self.height))
+    def draw(self):
+        pygame.draw.circle(WIN, self.colour, (self.x_pos, self.y_pos), self.radius)
 
-        self.rect = self.image.get_rect(center=(pos_x, pos_y))
+    def move(self, delta_time):
+        self.x_pos += self.x_vel * delta_time
+        self.y_pos += self.y_vel * delta_time
 
-    def scale_down(self, delta_time):
-        if self.radius > 4:
-            self.radius -= delta_time * self.srink_speed
-        else:
-            partical_effect_group.remove(self)
-    
+    def scale(self, delta_time):
+        self.radius -= delta_time * self.srink_speed
+
+    def remove(self):
+        if self.radius < 0:
+            partical_list.remove(self)
+
     def update(self, delta_time):
-        self.circle = pygame.draw.circle(WIN, self.colour_1, (self.rect.x, self.rect.y), self.radius)
-        self.circle = pygame.draw.circle(WIN, self.colour_2, (self.rect.x, self.rect.y), self.radius / 2)
-
-        self.scale_down(delta_time)
+        self.draw()
+        self.move(delta_time)
+        self.scale(delta_time)
+        self.remove()
 
 
 class Game():
@@ -433,28 +428,28 @@ class Game():
         self.transition_delay = 1
         self.transition_timer = self.transition_delay
 
-        self.gray_colour_list = [GRAY_1, GRAY_2, GRAY_3]
-        self.white_colour_list = [WHITE_1, WHITE_2, WHITE_3]
+        self.white_colour_list = [WHITE_1, WHITE_2]
+        self.gray_colour_list = [GRAY_1, GRAY_2]
 
-        self.space_to_start_text = font_1.render("Press Space To Start", True, BLACK)
+        self.space_to_start_text = FONT_1.render("Press Space To Start", True, BLACK)
         self.space_to_start_text_rect = self.space_to_start_text.get_rect(center=(WIN_WIDTH / 2, WIN_WIDTH / 2))
 
         self.space_to_start_text_rect_pos = pygame.math.Vector2(self.space_to_start_text_rect.x, self.space_to_start_text_rect.y)
         self.space_to_start_text_delta_y = 1
    
-        self.successful_text = font_2.render("Successful", True, GREEN)
+        self.successful_text = FONT_2.render("Successful", True, GREEN)
         self.successful_text_rect = self.successful_text.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
 
-        self.failed_text = font_2.render("Failed", True, RED)
+        self.failed_text = FONT_2.render("Failed", True, RED)
         self.failed_text_rect = self.failed_text.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
 
-        self.current_level_text = font_1.render(f"| Level: {self.current_level}", True, BLACK)
+        self.current_level_text = FONT_1.render(f"| Level: {self.current_level}", True, BLACK)
         self.current_level_text_rect = self.current_level_text.get_rect(topleft=(0 + 48, 0))
 
-        self.current_time_text = font_1.render(f" | Time: {round(self.current_time, 1)}", True, BLACK)
+        self.current_time_text = FONT_1.render(f" | Time: {round(self.current_time, 1)}", True, BLACK)
         self.current_time_text_rect = self.current_time_text.get_rect(topleft=(self.current_level_text_rect.topright))
 
-        self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
+        self.fastest_time_text = FONT_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
         self.fastest_time_text_rect = self.fastest_time_text.get_rect(topright=(WIN_WIDTH - 48, 0))
 
     def level_setup(self, level_data):
@@ -472,11 +467,11 @@ class Game():
                     collision_tile_group.add(tile)
 
                 if cell == "P":
-                    player = Player(BLUE, 48, 120, 0.2, BLUE, CYAN, 260, 1, 16, x, y)
+                    player = Player(BLUE, 48, 120, 0.2, BLUE, CYAN, 260, 1, 17, x, y)
                     player_group.add(player)
 
                 if cell == "A":
-                    enemy = Enemy(RED, 48, 60, 1, RED, YELLOW, 260, 1, 16, x, y)
+                    enemy = Enemy(RED, 48, 60, 1, RED, YELLOW, 260, 1, 17, x, y)
                     enemy_group.add(enemy)
 
     def level_clear(self):
@@ -486,7 +481,6 @@ class Game():
         enemy_bullet_group.empty()
         collision_tile_group.empty()
         backgound_tile_group.empty()
-        partical_effect_group.empty()
 
     def load_level(self, delta_time):
         if len(enemy_group) == 0:
@@ -519,24 +513,25 @@ class Game():
     def timer(self, delta_time):
         self.current_time += delta_time
 
-        self.current_time_text = font_1.render(f" | Time: {round(self.current_time, 1)}", True, BLACK)
+        self.current_time_text = FONT_1.render(f" | Time: {round(self.current_time, 1)}", True, BLACK)
         self.current_time_text_rect = self.current_time_text.get_rect(topleft=(self.current_level_text_rect.topright))
 
-        self.current_level_text = font_1.render(f"| Level: {self.current_level}", True, BLACK)
+        self.current_level_text = FONT_1.render(f"| Level: {self.current_level}", True, BLACK)
         self.current_level_text_rect = self.current_level_text.get_rect(topleft=(0 + 48, 0))
 
     def bullet_bullet_collisions(self):
         for player_bullet_sprite in player_bullet_group.sprites():
             for enemy_bullet_sprite in enemy_bullet_group.sprites():
                 if player_bullet_sprite.rect.colliderect(enemy_bullet_sprite.rect):
-                    exploded = ParticalEffect(ORANGE, YELLOW, 32, 64, player_bullet_sprite.rect.x + (player_bullet_sprite.width / 2), player_bullet_sprite.rect.y + (player_bullet_sprite.height / 2))
-                    partical_effect_group.add(exploded)
-
-                    exploded = ParticalEffect(ORANGE, YELLOW, 32, 64, enemy_bullet_sprite.rect.x + (enemy_bullet_sprite.width / 2), enemy_bullet_sprite.rect.y + (enemy_bullet_sprite.height / 2))
-                    partical_effect_group.add(exploded)
-
                     player_bullet_sprite.kill()
                     enemy_bullet_sprite.kill()
+
+                    for i in range(50):
+                        partical_list.append(Partical(ORANGE, random.randint(round(player_bullet_sprite.width / 2), round(player_bullet_sprite.width * 2)), random.randint(90, 180), random.randint(-180, 180), random.randint(-180, 180), player_bullet_sprite.rect.x + player_bullet_sprite.width / 2, player_bullet_sprite.rect.y + player_bullet_sprite.height / 2))
+                    
+                    for i in range(50):
+                        partical_list.append(Partical(ORANGE, random.randint(round(enemy_bullet_sprite.width / 2), round(enemy_bullet_sprite.width * 2)), random.randint(90, 180), random.randint(-180, 180), random.randint(-180, 180), enemy_bullet_sprite.rect.x + enemy_bullet_sprite.width / 2, enemy_bullet_sprite.rect.y + enemy_bullet_sprite.height / 2))
+
 
     def player_bullet_collisions(self, delta_time):
         if len(player_group) == 0:
@@ -557,7 +552,9 @@ class Game():
         enemy_group.update(delta_time)
         player_bullet_group.update(delta_time) 
         enemy_bullet_group.update(delta_time)
-        partical_effect_group.update(delta_time)
+
+        for partical in partical_list:
+            partical.update(delta_time)
 
         self.timer(delta_time)
         self.load_level(delta_time)
@@ -584,7 +581,7 @@ class Game():
             if self.current_time < self.fastest_time:
                 self.fastest_time = self.current_time
 
-                self.fastest_time_text = font_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
+                self.fastest_time_text = FONT_1.render(f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
                 self.fastest_time_text_rect = self.fastest_time_text.get_rect(topright=(WIN_WIDTH - 48, 0))
 
         elif not self.game_finished and not self.game_just_started:
