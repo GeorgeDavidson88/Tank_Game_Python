@@ -81,8 +81,8 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.width, self.height))
 
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
-
-        self.vector2 = pygame.math.Vector2(0, 0)
+        
+        self.direction = pygame.math.Vector2(0, 0)
 
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
 
@@ -91,22 +91,22 @@ class Player(pygame.sprite.Sprite):
     def horizontal_collisions(self):
         for sprite in collision_tile_group.sprites():
             if sprite.rect.colliderect(self):
-                if self.vector2.x > 0:
+                if self.direction.x > 0:
                     self.rect.right = sprite.rect.left
                     self.rect_pos.x = sprite.rect.left - self.width
 
-                elif self.vector2.x < 0:
+                elif self.direction.x < 0:
                     self.rect.left = sprite.rect.right
                     self.rect_pos.x = sprite.rect.right
 
     def vertical_collisions(self):
         for sprite in collision_tile_group.sprites():
             if sprite.rect.colliderect(self):
-                if self.vector2.y > 0:
+                if self.direction.y > 0:
                     self.rect.bottom = sprite.rect.top
                     self.rect_pos.y = sprite.rect.top - self.height
 
-                elif self.vector2.y < 0:
+                elif self.direction.y < 0:
                     self.rect.top = sprite.rect.bottom
                     self.rect_pos.y = sprite.rect.bottom
 
@@ -114,26 +114,26 @@ class Player(pygame.sprite.Sprite):
         self.key = pygame.key.get_pressed()
 
         if self.key[pygame.K_a]:
-            self.vector2.x = -1
+            self.direction.x = -1
         elif self.key[pygame.K_d]:
-            self.vector2.x = 1
+            self.direction.x = 1
         else:
-            self.vector2.x = 0
+            self.direction.x = 0
 
-        self.rect_pos.x += self.vector2.x * self.speed * delta_time
+        self.rect_pos.x += self.direction.x * self.speed * delta_time
         self.rect.x = round(self.rect_pos.x)
 
     def vertical_movement(self, delta_time):
         self.key = pygame.key.get_pressed()
 
         if self.key[pygame.K_w]:
-            self.vector2.y = -1
+            self.direction.y = -1
         elif self.key[pygame.K_s]:
-            self.vector2.y = 1
+            self.direction.y = 1
         else:
-            self.vector2.y = 0
+            self.direction.y = 0
 
-        self.rect_pos.y += self.vector2.y * self.speed * delta_time
+        self.rect_pos.y += self.direction.y * self.speed * delta_time
         self.rect.y = round(self.rect_pos.y)
 
     def shoot(self, delta_time):
@@ -148,11 +148,31 @@ class Player(pygame.sprite.Sprite):
                 self.shoot_timer = self.shoot_delay
 
         self.shoot_timer -= delta_time
+    
+    def draw(self):
+        pygame.draw.rect(WIN, self.colour, (self.rect.x,self.rect.y, self.width, self.height), 0, 8)
+
+        center_x, center_y = self.rect.center
+
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        self.rise = mouse_x - center_x
+        self.run = mouse_y - center_y
+
+        self.angle = math.atan2(self.run, self.rise)
+        
+        self.delta_y = math.sin(self.angle)    
+        self.delta_x = math.cos(self.angle)
+
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 8, mouse_y + self.delta_y - self.run / 8), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 4, mouse_y + self.delta_y - self.run / 4), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 2.66, mouse_y + self.delta_y - self.run / 2.66), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 2, mouse_y + self.delta_y - self.run / 2), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 1.62, mouse_y + self.delta_y - self.run / 1.62), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 1.36, mouse_y + self.delta_y - self.run / 1.36), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 1.16, mouse_y + self.delta_y - self.run / 1.16), 8)
 
     def update(self, delta_time):
-        pygame.draw.rect(WIN, self.colour, (self.rect.x,
-                         self.rect.y, self.width, self.height), 0, 8)
-
         self.horizontal_movement(delta_time)
         self.horizontal_collisions()
 
@@ -160,6 +180,7 @@ class Player(pygame.sprite.Sprite):
         self.vertical_collisions()
 
         self.shoot(delta_time)
+        self.draw()
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -239,13 +260,8 @@ class Enemy(pygame.sprite.Sprite):
             for sprites in player_group.sprites():
                 player_center_x, player_center_y = sprites.rect.center
 
-            try:
                 bullet = Bullet(self.bullet_colour, self.bullet_speed, self.bullet_max_bounces, self.bullet_size, player_group,
                                 self.rect.center, (player_center_x + random.randint(-100, 100), player_center_y + random.randint(-100, 100)))
-                enemy_bullet_group.add(bullet)
-            except:
-                bullet = Bullet(self.bullet_colour, self.bullet_speed, self.bullet_max_bounces, self.bullet_size,
-                                player_group, self.rect.center, (random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT)))
                 enemy_bullet_group.add(bullet)
 
             self.shoot_timer = self.shoot_delay
@@ -300,8 +316,8 @@ class Bullet(pygame.sprite.Sprite):
         self.run = target_y - center_y
 
         self.angle = math.atan2(self.run, self.rise)
-
-        self.delta_y = math.sin(self.angle) * self.bullet_speed
+        
+        self.delta_y = math.sin(self.angle) * self.bullet_speed      
         self.delta_x = math.cos(self.angle) * self.bullet_speed
 
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
@@ -634,6 +650,7 @@ def main():
 
         pygame.draw.circle(WIN, BLUE, pygame.mouse.get_pos(), 8)
 
+        
         pygame.display.update()
 
 
