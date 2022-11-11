@@ -3,6 +3,48 @@
 
 # A = Tank level 1
 
+level_menu = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T           P           T", ##
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+level_sucessfull = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T                       T", #
+"TTTTTTTTTTTTTTTTTTTTTTTTT",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T           P           T", ##
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             # 
+
 level_1 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "T                       T",

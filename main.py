@@ -81,7 +81,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.width, self.height))
 
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
-        
+
         self.direction = pygame.math.Vector2(0, 0)
 
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
@@ -148,9 +148,10 @@ class Player(pygame.sprite.Sprite):
                 self.shoot_timer = self.shoot_delay
 
         self.shoot_timer -= delta_time
-    
+
     def draw(self):
-        pygame.draw.rect(WIN, self.colour, (self.rect.x,self.rect.y, self.width, self.height), 0, 8)
+        pygame.draw.rect(WIN, self.colour, (self.rect.x,
+                         self.rect.y, self.width, self.height), 0, 8)
 
         center_x, center_y = self.rect.center
 
@@ -160,17 +161,24 @@ class Player(pygame.sprite.Sprite):
         self.run = mouse_y - center_y
 
         self.angle = math.atan2(self.run, self.rise)
-        
-        self.delta_y = math.sin(self.angle)    
+
+        self.delta_y = math.sin(self.angle)
         self.delta_x = math.cos(self.angle)
 
-        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 8, mouse_y + self.delta_y - self.run / 8), 8)
-        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 4, mouse_y + self.delta_y - self.run / 4), 8)
-        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 2.66, mouse_y + self.delta_y - self.run / 2.66), 8)
-        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 2, mouse_y + self.delta_y - self.run / 2), 8)
-        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 1.62, mouse_y + self.delta_y - self.run / 1.62), 8)
-        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 1.36, mouse_y + self.delta_y - self.run / 1.36), 8)
-        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x - self.rise / 1.16, mouse_y + self.delta_y - self.run / 1.16), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
+                           self.rise / 8, mouse_y + self.delta_y - self.run / 8), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
+                           self.rise / 4, mouse_y + self.delta_y - self.run / 4), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
+                           self.rise / 2.66, mouse_y + self.delta_y - self.run / 2.66), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
+                           self.rise / 2, mouse_y + self.delta_y - self.run / 2), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
+                           self.rise / 1.62, mouse_y + self.delta_y - self.run / 1.62), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
+                           self.rise / 1.36, mouse_y + self.delta_y - self.run / 1.36), 8)
+        pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
+                           self.rise / 1.16, mouse_y + self.delta_y - self.run / 1.16), 8)
 
     def update(self, delta_time):
         self.horizontal_movement(delta_time)
@@ -213,7 +221,7 @@ class Enemy(pygame.sprite.Sprite):
         self.shoot_timer = self.shoot_delay
 
         self.direction_change_timer = random.randint(2, 5)
-        
+
         self.direction_list = [-1, 1]
 
         self.vector2.x = random.choice(self.direction_list)
@@ -316,8 +324,8 @@ class Bullet(pygame.sprite.Sprite):
         self.run = target_y - center_y
 
         self.angle = math.atan2(self.run, self.rise)
-        
-        self.delta_y = math.sin(self.angle) * self.bullet_speed      
+
+        self.delta_y = math.sin(self.angle) * self.bullet_speed
         self.delta_x = math.cos(self.angle) * self.bullet_speed
 
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
@@ -438,12 +446,8 @@ class Game():
         self.current_level = 0
 
         self.current_time = 0
-        self.fastest_time = math.inf
 
         self.game_active = False
-
-        self.game_just_started = True
-        self.game_finished = False
 
         self.white_colour_list = [WHITE_1, WHITE_2]
         self.gray_colour_list = [GRAY_1, GRAY_2]
@@ -456,29 +460,6 @@ class Game():
         self.space_to_start_text_rect_pos = pygame.math.Vector2(
             self.space_to_start_text_rect.x, self.space_to_start_text_rect.y)
         self.space_to_start_text_delta_y = 1
-
-        self.successful_text = FONT_2.render("Successful", True, GREEN)
-        self.successful_text_rect = self.successful_text.get_rect(
-            center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
-
-        self.failed_text = FONT_2.render("Failed", True, RED)
-        self.failed_text_rect = self.failed_text.get_rect(
-            center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
-
-        self.current_level_text = FONT_1.render(
-            f"| Level: {self.current_level}", True, BLACK)
-        self.current_level_text_rect = self.current_level_text.get_rect(
-            topleft=(0 + 48, 0))
-
-        self.current_time_text = FONT_1.render(
-            f" | Time: {round(self.current_time, 1)}", True, BLACK)
-        self.current_time_text_rect = self.current_time_text.get_rect(
-            topleft=(self.current_level_text_rect.topright))
-
-        self.fastest_time_text = FONT_1.render(
-            f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
-        self.fastest_time_text_rect = self.fastest_time_text.get_rect(
-            topright=(WIN_WIDTH - 48, 0))
 
     def level_setup(self, level_data):
         for row_index, row in enumerate(level_data):
@@ -511,37 +492,27 @@ class Game():
         backgound_tile_group.empty()
 
     def load_level(self):
-        if len(enemy_group) == 0:
+        if not self.game_active:
+            if len(player_group) == 0:
+                self.level_setup(level_menu)
+
+        elif len(enemy_group) == 0:
+            self.level_clear()
+            self.current_level += 1
+
+            if self.current_level == 1:
+                self.level_setup(level_1)
+
+            if self.current_level == 2:
+                self.level_setup(level_2)
+
             if self.current_level == 3:
-                self.game_finished = True
+                self.level_setup(level_3)
+
+            if self.current_level == 4:
+                self.level_setup(level_sucessfull)
+
                 self.game_active = False
-            else:
-                self.level_clear()
-                self.current_level += 1
-
-                self.game_just_started = False
-
-                if self.current_level == 1:
-                    self.level_setup(level_1)
-
-                if self.current_level == 2:
-                    self.level_setup(level_2)
-
-                if self.current_level == 3:
-                    self.level_setup(level_3)
-
-    def timer(self, delta_time):
-        self.current_time += delta_time
-
-        self.current_time_text = FONT_1.render(
-            f" | Time: {round(self.current_time, 1)}", True, BLACK)
-        self.current_time_text_rect = self.current_time_text.get_rect(
-            topleft=(self.current_level_text_rect.topright))
-
-        self.current_level_text = FONT_1.render(
-            f"| Level: {self.current_level}", True, BLACK)
-        self.current_level_text_rect = self.current_level_text.get_rect(
-            topleft=(0 + 48, 0))
 
     def bullet_bullet_collisions(self):
         for player_bullet_sprite in player_bullet_group.sprites():
@@ -558,33 +529,36 @@ class Game():
                         partical_list.append(Partical(ORANGE, random.randint(round(enemy_bullet_sprite.width / 2), round(enemy_bullet_sprite.width * 2)), random.randint(90, 180), random.randint(-180, 180),
                                              random.randint(-180, 180), enemy_bullet_sprite.rect.x + enemy_bullet_sprite.width / 2 + random.randint(-4, 4), enemy_bullet_sprite.rect.y + enemy_bullet_sprite.height / 2 + random.randint(-4, 4)))
 
-    def player_bullet_collisions(self,):
+    def player_bullet_collisions(self):
         if len(player_group) == 0:
+            self.level_clear()
             self.game_active = False
 
-    def update(self, delta_time):
+    def partical_group_update(self, delta_time):
+        for partical in partical_list:
+            partical.update(delta_time)
+
+    def level_text(self):
         if self.game_active:
-            WIN.fill(WHITE_1)
+            self.current_level_text = FONT_1.render(
+                f"Level {self.current_level}", True, BLACK)
 
-            collision_tile_group.draw(WIN)
-            backgound_tile_group.draw(WIN)
+        if not self.game_active:
+            self.current_level_text = FONT_1.render(
+                f"Level Menu", True, BLACK)
 
-            player_group.update(delta_time)
-            enemy_group.update(delta_time)
-            player_bullet_group.update(delta_time)
-            enemy_bullet_group.update(delta_time)
+        if not self.game_active and self.current_level == 4:
+            if not self.game_active:
+                self.current_level_text = FONT_1.render(
+                    f"Level Sucessfull", True, BLACK)
 
-            for partical in partical_list:
-                partical.update(delta_time)
+        self.current_level_text_rect = self.current_level_text.get_rect(
+            center=(WIN_WIDTH / 2, 24))
 
-            self.timer(delta_time)
-            self.load_level()
+        WIN.blit(self.current_level_text, self.current_level_text_rect)
 
-            self.bullet_bullet_collisions()
-            self.player_bullet_collisions()
-        else:
-            WIN.fill(WHITE_1)
-
+    def start_text(self, delta_time):
+        if not self.game_active:
             if self.space_to_start_text_rect_pos.y < 0 + 48 * 12:
                 self.space_to_start_text_delta_y *= -1
             elif self.space_to_start_text_rect_pos.y > WIN_HEIGHT - 48 * 4:
@@ -596,28 +570,29 @@ class Game():
 
             WIN.blit(self.space_to_start_text, self.space_to_start_text_rect)
 
-            if self.current_level == 3 and self.game_finished:
-                WIN.blit(self.successful_text, self.successful_text_rect)
+    def update(self, delta_time):
+        WIN.fill(WHITE_1)
 
-                if self.current_time < self.fastest_time:
-                    self.fastest_time = self.current_time
+        self.load_level()
 
-                    self.fastest_time_text = FONT_1.render(
-                        f"Fastest Time: {round(self.fastest_time, 1)} |", True, BLACK)
-                    self.fastest_time_text_rect = self.fastest_time_text.get_rect(
-                        topright=(WIN_WIDTH - 48, 0))
+        collision_tile_group.draw(WIN)
+        backgound_tile_group.draw(WIN)
 
-            elif not self.game_finished and not self.game_just_started:
-                WIN.blit(self.failed_text, self.failed_text_rect)
+        player_group.update(delta_time)
+        enemy_group.update(delta_time)
+        player_bullet_group.update(delta_time)
+        enemy_bullet_group.update(delta_time)
+        self.partical_group_update(delta_time)
 
-        WIN.blit(self.current_time_text, self.current_time_text_rect)
-        WIN.blit(self.fastest_time_text, self.fastest_time_text_rect)
-        WIN.blit(self.current_level_text, self.current_level_text_rect)
+        self.bullet_bullet_collisions()
+        self.player_bullet_collisions()
+
+        self.start_text(delta_time)
+        self.level_text()
 
 
 def main():
     previous_time = time.time()
-
     game = Game()
 
     while True:
@@ -642,15 +617,12 @@ def main():
                         game.current_time = 0
                         game.current_level = 0
 
-                        game.game_finished = False
-
                         game.game_active = True
 
         game.update(delta_time)
 
         pygame.draw.circle(WIN, BLUE, pygame.mouse.get_pos(), 8)
 
-        
         pygame.display.update()
 
 
