@@ -31,6 +31,7 @@ CYAN = (0, 255, 255)
 
 ORANGE = (255, 128, 0)
 DARK_GREEN = (0, 128, 0)
+LIGHT_GRAY = (128, 128, 128)
 
 BROWN_1 = (98, 52, 18)
 BROWN_2 = (106, 60, 26)
@@ -56,6 +57,8 @@ partical_list = []
 # fonts
 FONT_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
 FONT_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
+
+# sounds
 
 
 class Player(pygame.sprite.Sprite):
@@ -356,6 +359,11 @@ class Bullet(pygame.sprite.Sprite):
                     self.delta_y *= -1
                     self.bounce_index += 1
 
+                if self.bounce_index <= self.max_bounces:
+                    for i in range(50):
+                        partical_list.append(Partical(LIGHT_GRAY, random.randint(round(self.width / 2), round(self.width * 2)), random.randint(90, 180), random.randint(-180, 180), random.randint(
+                            -180, 180), self.rect.x + self.width / 2 + random.randint(-4, 4), self.rect.y + self.height / 2 + random.randint(-4, 4)))
+
     def kill_sprite(self):
         for sprite in self.kill_group.sprites():
             if self.rect.colliderect(sprite):
@@ -476,11 +484,11 @@ class Game():
                     collision_tile_group.add(tile)
 
                 if cell == "P":
-                    player = Player(BLUE, 48, 120, 0.2, BLUE, 260, 1, 17, x, y)
+                    player = Player(BLUE, 48, 120, 0.2, BLUE, 260, 3, 17, x, y)
                     player_group.add(player)
 
                 if cell == "A":
-                    enemy = Enemy(RED, 48, 60, 1, RED, 260, 1, 17, x, y)
+                    enemy = Enemy(RED, 48, 0, 1, RED, 260, 1, 17, x, y)
                     enemy_group.add(enemy)
 
     def level_clear(self):

@@ -27,17 +27,17 @@ level_menu = [
 level_sucessfull = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "T                       T",
-"T                       T", #
-"TTTTTTTTTTTTTTTTTTTTTTTTT",
-"T                       T", #
-"T                       T",
-"T                       T", #
+"T T   T TTT TTTTT TTTTT T", #
+"T T  TT  T  T     T   T T",
+"T T T T  T  T     TTTTT T", #
+"T TT  T  T  T     T     T",
+"T T   T TTT TTTTT TTTTT T", #
 "T                       T",
 "T           P           T", ##
 "T                       T",
 "T                       T", #
 "T                       T",
-"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T", #
 "T                       T",
 "T                       T", #
 "T                       T",
