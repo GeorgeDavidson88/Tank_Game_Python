@@ -22,27 +22,23 @@ pygame.display.set_icon(pygame.image.load(
 pygame.mouse.set_visible(False)
 
 # colours
-RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
-PURPLE = (255, 0, 255)
 BLUE = (0, 0, 255)
-CYAN = (0, 255, 255)
+
+LIGHT_BROWN = (122, 76, 42)
+GREEN = (0, 128, 0)
+YELLOW = (245, 187, 39)
+PURPLE = (255, 0, 255)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
 
 ORANGE = (255, 128, 0)
-DARK_GREEN = (0, 128, 0)
 LIGHT_GRAY = (128, 128, 128)
-
-BROWN_1 = (98, 52, 18)
-BROWN_2 = (106, 60, 26)
 
 WHITE_1 = (255, 255, 255)
 WHITE_2 = (239, 239, 239)
 
 GRAY_1 = (32, 32, 32)
 GRAY_2 = (40, 40, 40)
-
-BLACK = (0, 0, 0)
 
 # sprite groups
 player_group = pygame.sprite.GroupSingle()
@@ -515,12 +511,32 @@ class Game():
                     tile = Tile(self.gray_colour_list, x, y)
                     collision_tile_group.add(tile)
 
-                if cell == "P":
-                    player = Player(BLUE, 48, 120, 0.2, BLUE, 260, 1, 17, x, y)
+                if cell == "U":
+                    player = Player(BLUE, 48, 120, 0.2, BLUE, 260, 1, 16, x, y)
                     player_group.add(player)
 
-                if cell == "A":
-                    enemy = Enemy(RED, 48, 0, 1, RED, 260, 1, 17, x, y)
+                if cell == "L":
+                    enemy = Enemy(LIGHT_BROWN, 48, 0, 1.8, LIGHT_BROWN, 260, 1, 16, x, y)
+                    enemy_group.add(enemy)
+                
+                if cell == "G":
+                    enemy = Enemy(GREEN, 48, 120, 1, GREEN, 260, 1, 16, x, y)
+                    enemy_group.add(enemy)
+                
+                if cell == "Y":
+                    enemy = Enemy(YELLOW, 48, 120, 1, YELLOW, 520, 0, 16, x, y)
+                    enemy_group.add(enemy)
+                
+                if cell == "P":
+                    enemy = Enemy(PURPLE, 48, 120, 0.28, PURPLE, 260, 1, 16, x, y)
+                    enemy_group.add(enemy)
+                
+                if cell == "R":
+                    enemy = Enemy(RED, 48, 0, 0.8, RED, 780, 3, 16, x, y)
+                    enemy_group.add(enemy)
+
+                if cell == "B":
+                    enemy = Enemy(BLACK, 48, 240, 0.5, BLACK, 520, 2, 16, x, y)
                     enemy_group.add(enemy)
 
     def level_clear(self):
@@ -552,6 +568,18 @@ class Game():
                 self.level_setup(level_3)
 
             if self.current_level == 4:
+                self.level_setup(level_4)
+
+            if self.current_level == 5:
+                self.level_setup(level_5)
+
+            if self.current_level == 6:
+                self.level_setup(level_6)
+
+            if self.current_level == 7:
+                self.level_setup(level_7)
+
+            if self.current_level == 8:
                 self.level_setup(level_sucessfull)
 
                 self.game_active = False
@@ -592,7 +620,7 @@ class Game():
             self.current_level_text = FONT_1.render(
                 f"Level Menu", True, BLACK)
 
-        if not self.game_active and self.current_level == 4:
+        if not self.game_active and self.current_level == 8:
             if not self.game_active:
                 self.current_level_text = FONT_1.render(
                     f"Level Sucessfull", True, BLACK)

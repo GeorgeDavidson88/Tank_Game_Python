@@ -1,7 +1,12 @@
 # T = Tile
-# P = Player
+# U = You
 
-# A = Tank level 1
+# L = Light brown Tank 
+# G = Green level 2
+# Y = Yellow level 3
+# P = Purple level 4
+# R = Red level 5
+# B = Black tank
 
 level_menu = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
@@ -12,7 +17,7 @@ level_menu = [
 "T                       T",
 "T                       T", #
 "T                       T",
-"T           P           T", ##
+"T           U           T", ##
 "T                       T",
 "T                       T", #
 "T                       T",
@@ -33,7 +38,7 @@ level_sucessfull = [
 "T TT  T  T  T     T     T",
 "T T   T TTT TTTTT TTTTT T", #
 "T                       T",
-"T           P           T", ##
+"T           U           T", ##
 "T                       T",
 "T                       T", #
 "T                       T",
@@ -54,7 +59,7 @@ level_1 = [
 "T                       T",
 "T         TTTTT         T", #
 "T         TTTTT         T",
-"T  P      TTTTT      A  T", ##
+"T  U      TTTTT      L  T", ##
 "T         TTTTT         T",
 "T         TTTTT         T", #
 "T                       T",
@@ -73,11 +78,11 @@ level_2 = [
 "T                       T",
 "T                       T", #
 "T                       T",
-"T    TTTT          A    T", #
+"T    TTTT          G    T", #
 "T    TTTT               T",
 "T    TTTT       TTTT    T", ##
 "T               TTTT    T",
-"T    P          TTTT    T", #
+"T    U          TTTT    T", #
 "T                       T",
 "T                       T", #
 "T                       T",
@@ -89,21 +94,105 @@ level_2 = [
 
 level_3 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
-"TTTT                    T",
-"TTTT                    T", #
-"TTTT  A                 T",
-"T                       T", #
-"T                       T",
-"T                 T     T", #
-"T                 T     T",
-"T                 T  P  T", ##
-"T                 T     T",
-"T                 T     T", #
 "T                       T",
 "T                       T", #
-"TTTT  A                 T",
-"TTTT                    T", #
-"TTTT                    T",
+"T                       T",
+"T                  L    T", #
+"T                       T",
+"T     TTTTT             T", #
+"T     T                 T",
+"T  U  T                 T", ##
+"T     T                 T",
+"T     T                 T", #
+"T                  G    T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+level_4 = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T                       T", #
+"T  U T               Y  T",
+"T    T                  T", #
+"T  TTT                  T",
+"T                       T", #
+"T                       T",
+"T                       T", ##
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T  Y                    T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+level_5 = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T           T           T",
+"T           T           T", #
+"T  L        T        P  T",
+"T           T           T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTT       TTTTTTTTT", ##
+"T                       T",
+"T                       T", #
+"T                       T",
+"T           T           T", #
+"T  U        T        L  T",
+"T           T           T", #
+"T           T           T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+level_6 = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T U   TTTTTTT         R T", ##
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+level_7 = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T  U                    T", #
+"T                       T",
+"TTTTTTTTTTT             T", #
+"T                       T",
+"T                     Y T", #
+"T                       T",
+"T  Y        TTTTTTTTTTTTT", ##
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTT            T", #
+"T                       T",
+"T Y                   Y T", #
+"T                       T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
              #
