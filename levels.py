@@ -158,19 +158,19 @@ level_5 = [
 level_6 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "T                       T",
-"T                       T", #
+"T                     R T", #
+"T                       T",
+"T   TTTTTTTTTTTTTTTTT   T", #
 "T                       T",
 "T                       T", #
 "T                       T",
-"T                       T", #
-"T                       T",
-"T U   TTTTTTT         R T", ##
+"T U TTTTTTTTTTTTTTTTT   T", ##
 "T                       T",
 "T                       T", #
 "T                       T",
-"T                       T", #
+"T   TTTTTTTTTTTTTTTTT   T", #
 "T                       T",
-"T                       T", #
+"T                     R T", #
 "T                       T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
@@ -196,3 +196,68 @@ level_7 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
              #
+
+level_8 = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T                     R T", #
+"T                       T",
+"T   TTTTTTTTTTTTTTTTTTTTT", #
+"T   T                   T",
+"T   T                   T", #
+"T   T       P           T",
+"T                   T   T", ##
+"T  R                T   T",
+"T                   T   T", #
+"TTTTTTTTTTTTTTTTTTTTT   T",
+"T                       T", #
+"T                     P T",
+"T U                     T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+level_9 = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T U                     T", #
+"T                       T",
+"T                       T", #
+"T     TTTTTTTTT         T",
+"T     T                 T", #
+"T     T                 T",
+"T     T  P              T", ##
+"T     T                 T",
+"T     T                 T", #
+"T     TTTTTTTTT         T",
+"T                       T", #
+"T                       T",
+"T       P             P T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+level_10 = [
+"TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"T     TTTTT             T", #
+"T     T                 T",
+"T  U  T                 T", ##
+"T     T                 T",
+"T     T                 T", #
+"T                  B    T",
+"T                       T", #
+"T                       T",
+"T                       T", #
+"T                       T",
+"TTTTTTTTTTTTTTTTTTTTTTTTT"] #
+ # # # # # # # # # # # # #
+             #
+
+

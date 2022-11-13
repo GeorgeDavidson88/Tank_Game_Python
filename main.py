@@ -528,7 +528,7 @@ class Game():
                     enemy_group.add(enemy)
                 
                 if cell == "P":
-                    enemy = Enemy(PURPLE, 48, 120, 0.28, PURPLE, 260, 1, 16, x, y)
+                    enemy = Enemy(PURPLE, 48, 60, 0.25, PURPLE, 260, 1, 16, x, y)
                     enemy_group.add(enemy)
                 
                 if cell == "R":
@@ -536,7 +536,7 @@ class Game():
                     enemy_group.add(enemy)
 
                 if cell == "B":
-                    enemy = Enemy(BLACK, 48, 240, 0.5, BLACK, 520, 2, 16, x, y)
+                    enemy = Enemy(BLACK, 48, 240, 0.35, BLACK, 780, 0, 16, x, y)
                     enemy_group.add(enemy)
 
     def level_clear(self):
@@ -580,7 +580,17 @@ class Game():
                 self.level_setup(level_7)
 
             if self.current_level == 8:
+                self.level_setup(level_8)
+
+            if self.current_level == 9:
+                self.level_setup(level_9)
+
+            if self.current_level == 10:
+                self.level_setup(level_10)
+
+            if self.current_level == 11:
                 self.level_setup(level_sucessfull)
+
 
                 self.game_active = False
 
@@ -620,7 +630,7 @@ class Game():
             self.current_level_text = FONT_1.render(
                 f"Level Menu", True, BLACK)
 
-        if not self.game_active and self.current_level == 8:
+        if not self.game_active and self.current_level == 11:
             if not self.game_active:
                 self.current_level_text = FONT_1.render(
                     f"Level Sucessfull", True, BLACK)
