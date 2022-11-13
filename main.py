@@ -59,6 +59,24 @@ FONT_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
 FONT_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
 # sounds
+load_level_sound = pygame.mixer.Sound(os.path.join("sounds", "load_level.wav"))
+
+explosion_sound = pygame.mixer.Sound(os.path.join("sounds", "explosion.wav"))
+
+shoot_sound_1 = pygame.mixer.Sound(os.path.join("sounds", "shoot_1.wav"))
+shoot_sound_2 = pygame.mixer.Sound(os.path.join("sounds", "shoot_2.wav"))
+shoot_sound_3 = pygame.mixer.Sound(os.path.join("sounds", "shoot_3.wav"))
+shoot_sound_list = [shoot_sound_1, shoot_sound_2, shoot_sound_3]
+
+bounce_sound_1 = pygame.mixer.Sound(os.path.join("sounds", "bounce_1.wav"))
+bounce_sound_2 = pygame.mixer.Sound(os.path.join("sounds", "bounce_2.wav"))
+bounce_sound_3 = pygame.mixer.Sound(os.path.join("sounds", "bounce_3.wav"))
+bounce_sound_list = [bounce_sound_1, bounce_sound_2, bounce_sound_3]
+
+bullet_explosion_sound_1 = pygame.mixer.Sound(os.path.join("sounds", "bullet_explosion_1.wav"))
+bullet_explosion_sound_2 = pygame.mixer.Sound(os.path.join("sounds", "bullet_explosion_2.wav"))
+bullet_explosion_sound_3 = pygame.mixer.Sound(os.path.join("sounds", "bullet_explosion_3.wav"))
+bullet_explosion_list = [bullet_explosion_sound_1, bullet_explosion_sound_2, bullet_explosion_sound_3]
 
 
 class Player(pygame.sprite.Sprite):
@@ -142,6 +160,9 @@ class Player(pygame.sprite.Sprite):
     def shoot(self, delta_time):
         if pygame.mouse.get_pressed()[0]:
             if self.shoot_timer < 0:
+                shoot_sound = random.choice(shoot_sound_list)
+                shoot_sound.play()
+
                 target = player_group.sprite.rect.center
 
                 bullet = Bullet(self.bullet_colour, self.bullet_speed, self.bullet_max_bounces,
@@ -221,7 +242,7 @@ class Enemy(pygame.sprite.Sprite):
         self.vector2 = pygame.math.Vector2(0, 0)
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
 
-        self.shoot_timer = self.shoot_delay
+        self.shoot_timer = random.randint(1,20) / 10
 
         self.direction_change_timer = random.randint(2, 5)
 
@@ -268,6 +289,9 @@ class Enemy(pygame.sprite.Sprite):
         self.shoot_timer -= delta_time
 
         if self.shoot_timer < 0:
+            shoot_sound = random.choice(shoot_sound_list)
+            shoot_sound.play()
+
             for sprites in player_group.sprites():
                 player_center_x, player_center_y = sprites.rect.center
 
@@ -360,6 +384,9 @@ class Bullet(pygame.sprite.Sprite):
                     self.bounce_index += 1
 
                 if self.bounce_index <= self.max_bounces:
+                    bounce_sound = random.choice(bounce_sound_list)
+                    bounce_sound.play()
+
                     for i in range(50):
                         partical_list.append(Partical(LIGHT_GRAY, random.randint(round(self.width / 2), round(self.width * 2)), random.randint(90, 180), random.randint(-180, 180), random.randint(
                             -180, 180), self.rect.x + self.width / 2 + random.randint(-4, 4), self.rect.y + self.height / 2 + random.randint(-4, 4)))
@@ -367,6 +394,8 @@ class Bullet(pygame.sprite.Sprite):
     def kill_sprite(self):
         for sprite in self.kill_group.sprites():
             if self.rect.colliderect(sprite):
+                explosion_sound.play()
+
                 sprite.kill()
                 Bullet.kill(self)
 
@@ -383,6 +412,9 @@ class Bullet(pygame.sprite.Sprite):
 
     def explode_bullet(self):
         if self.bounce_index > self.max_bounces:
+            bullet_explosion_sound = random.choice(bullet_explosion_list)
+            bullet_explosion_sound.play()
+
             Bullet.kill(self)
 
             for i in range(50):
@@ -484,7 +516,7 @@ class Game():
                     collision_tile_group.add(tile)
 
                 if cell == "P":
-                    player = Player(BLUE, 48, 120, 0.2, BLUE, 260, 3, 17, x, y)
+                    player = Player(BLUE, 48, 120, 0.2, BLUE, 260, 1, 17, x, y)
                     player_group.add(player)
 
                 if cell == "A":
@@ -503,10 +535,12 @@ class Game():
         if not self.game_active:
             if len(player_group) == 0:
                 self.level_setup(level_menu)
+                load_level_sound.play()
 
         elif len(enemy_group) == 0:
             self.level_clear()
             self.current_level += 1
+            load_level_sound.play()
 
             if self.current_level == 1:
                 self.level_setup(level_1)
@@ -526,6 +560,9 @@ class Game():
         for player_bullet_sprite in player_bullet_group.sprites():
             for enemy_bullet_sprite in enemy_bullet_group.sprites():
                 if player_bullet_sprite.rect.colliderect(enemy_bullet_sprite.rect):
+                    bullet_explosion_sound = random.choice(bullet_explosion_list)
+                    bullet_explosion_sound.play()
+
                     player_bullet_sprite.kill()
                     enemy_bullet_sprite.kill()
 
