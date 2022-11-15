@@ -35,7 +35,7 @@ ORANGE = (255, 128, 0)
 LIGHT_GRAY = (128, 128, 128)
 
 WHITE_1 = (255, 255, 255)
-WHITE_2 = (239, 239, 239)
+WHITE_2 = (247, 247, 247)
 
 GRAY_1 = (32, 32, 32)
 GRAY_2 = (40, 40, 40)
@@ -55,6 +55,8 @@ FONT_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
 FONT_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
 # sounds
+pygame.mixer.set_num_channels(128)
+
 load_level_sound = pygame.mixer.Sound(os.path.join("sounds", "load_level.wav"))
 
 explosion_sound = pygame.mixer.Sound(os.path.join("sounds", "explosion.wav"))

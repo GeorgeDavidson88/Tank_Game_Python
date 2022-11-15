@@ -34,11 +34,11 @@ level_sucessfull = [
 "T                       T",
 "T T   T TTT TTTTT TTTTT T", #
 "T T  TT  T  T     T   T T",
-"T T T T  T  T     TTTTT T", #
+"T T T T  T  T U   TTTTT T", #
 "T TT  T  T  T     T     T",
 "T T   T TTT TTTTT TTTTT T", #
 "T                       T",
-"T           U           T", ##
+"T                       T", ##
 "T                       T",
 "T                       T", #
 "T                       T",
@@ -101,7 +101,7 @@ level_3 = [
 "T                       T",
 "T     TTTTT             T", #
 "T     T                 T",
-"T  U  T                 T", ##
+"T  U  T G               T", ##
 "T     T                 T",
 "T     T                 T", #
 "T                  G    T",
@@ -183,11 +183,11 @@ level_7 = [
 "T                       T",
 "TTTTTTTTTTT             T", #
 "T                       T",
-"T                     Y T", #
+"T Y                   Y T", #
 "T                       T",
-"T  Y        TTTTTTTTTTTTT", ##
+"T           TTTTTTTTTTTTT", ##
 "T                       T",
-"T                       T", #
+"T Y                   Y T", #
 "T                       T",
 "TTTTTTTTTTTT            T", #
 "T                       T",
@@ -205,7 +205,7 @@ level_8 = [
 "T   TTTTTTTTTTTTTTTTTTTTT", #
 "T   T                   T",
 "T   T                   T", #
-"T   T       P           T",
+"T   T       Y           T",
 "T                   T   T", ##
 "T  R                T   T",
 "T                   T   T", #
@@ -221,19 +221,19 @@ level_8 = [
 level_9 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "T                       T",
-"T U                     T", #
+"T U                  G  T", #
 "T                       T",
 "T                       T", #
 "T     TTTTTTTTT         T",
 "T     T                 T", #
 "T     T                 T",
-"T     T  P              T", ##
+"T     T  R           Y  T", ##
 "T     T                 T",
 "T     T                 T", #
 "T     TTTTTTTTT         T",
 "T                       T", #
 "T                       T",
-"T       P             P T", #
+"T        G           Y  T", #
 "T                       T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
@@ -241,21 +241,21 @@ level_9 = [
 
 level_10 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T           T           T",
+"T           T           T", #
+"T     P     T     Y     T",
+"T           T           T", #
+"T           T           T",
+"T      TTTTTTTTTTT      T", #
 "T                       T",
-"T                       T", #
+"T     L     G     R     T", ##
 "T                       T",
-"T                       T", #
-"T                       T",
-"T     TTTTT             T", #
-"T     T                 T",
-"T  U  T                 T", ##
-"T     T                 T",
-"T     T                 T", #
-"T                  B    T",
-"T                       T", #
-"T                       T",
-"T                       T", #
-"T                       T",
+"T      TTTTTTTTTTT      T", #
+"T           T           T",
+"T           T           T", #
+"T           T           T",
+"T     U     T     B     T", #
+"T           T           T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
              #
