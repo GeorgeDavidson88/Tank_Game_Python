@@ -4,6 +4,11 @@ A doggy-doo-doo tank game made with Python. You are the blue tank. Kill all the 
 <img src="README.assets/tanks_in_action.png">
 
 # Instructions
+### Installation
+Make sure you have Pygame installed.
+```bash
+pip install pygame # install pygame with pip
+```
 ### How To Play
 * W, A, S, and D are used to move around.
 * Hold the right mouse button to shoot.
@@ -15,9 +20,3 @@ A doggy-doo-doo tank game made with Python. You are the blue tank. Kill all the 
 * Your bullets and enemy bullets will explode when they collide.
 * Enemy bullets pass through each other.
 * Bullets can bounce off walls.
-
-### Installation
-Make sure you have Pygame installed.
-```bash
-pip install pygame # install pygame with pip
-```

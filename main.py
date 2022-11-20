@@ -57,6 +57,9 @@ FONT_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 # sounds
 pygame.mixer.set_num_channels(128)
 
+pygame.mixer.music.load(os.path.join("sounds", "music.wav"))
+pygame.mixer.music.play(-1)
+
 load_level_sound = pygame.mixer.Sound(os.path.join("sounds", "load_level.wav"))
 
 explosion_sound = pygame.mixer.Sound(os.path.join("sounds", "explosion.wav"))
@@ -71,10 +74,14 @@ bounce_sound_2 = pygame.mixer.Sound(os.path.join("sounds", "bounce_2.wav"))
 bounce_sound_3 = pygame.mixer.Sound(os.path.join("sounds", "bounce_3.wav"))
 bounce_sound_list = [bounce_sound_1, bounce_sound_2, bounce_sound_3]
 
-bullet_explosion_sound_1 = pygame.mixer.Sound(os.path.join("sounds", "bullet_explosion_1.wav"))
-bullet_explosion_sound_2 = pygame.mixer.Sound(os.path.join("sounds", "bullet_explosion_2.wav"))
-bullet_explosion_sound_3 = pygame.mixer.Sound(os.path.join("sounds", "bullet_explosion_3.wav"))
-bullet_explosion_list = [bullet_explosion_sound_1, bullet_explosion_sound_2, bullet_explosion_sound_3]
+bullet_explosion_sound_1 = pygame.mixer.Sound(
+    os.path.join("sounds", "bullet_explosion_1.wav"))
+bullet_explosion_sound_2 = pygame.mixer.Sound(
+    os.path.join("sounds", "bullet_explosion_2.wav"))
+bullet_explosion_sound_3 = pygame.mixer.Sound(
+    os.path.join("sounds", "bullet_explosion_3.wav"))
+bullet_explosion_list = [bullet_explosion_sound_1,
+                         bullet_explosion_sound_2, bullet_explosion_sound_3]
 
 
 class Player(pygame.sprite.Sprite):
@@ -240,7 +247,7 @@ class Enemy(pygame.sprite.Sprite):
         self.vector2 = pygame.math.Vector2(0, 0)
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
 
-        self.shoot_timer = random.randint(1,20) / 10
+        self.shoot_timer = random.randint(1, 20) / 10
 
         self.direction_change_timer = random.randint(2, 5)
 
@@ -518,27 +525,30 @@ class Game():
                     player_group.add(player)
 
                 if cell == "L":
-                    enemy = Enemy(LIGHT_BROWN, 48, 0, 1.8, LIGHT_BROWN, 260, 1, 16, x, y)
+                    enemy = Enemy(LIGHT_BROWN, 48, 0, 1.8,
+                                  LIGHT_BROWN, 260, 1, 16, x, y)
                     enemy_group.add(enemy)
-                
+
                 if cell == "G":
                     enemy = Enemy(GREEN, 48, 120, 1, GREEN, 260, 1, 16, x, y)
                     enemy_group.add(enemy)
-                
+
                 if cell == "Y":
                     enemy = Enemy(YELLOW, 48, 120, 1, YELLOW, 520, 0, 16, x, y)
                     enemy_group.add(enemy)
-                
+
                 if cell == "P":
-                    enemy = Enemy(PURPLE, 48, 60, 0.25, PURPLE, 260, 1, 16, x, y)
+                    enemy = Enemy(PURPLE, 48, 60, 0.25,
+                                  PURPLE, 260, 1, 16, x, y)
                     enemy_group.add(enemy)
-                
+
                 if cell == "R":
                     enemy = Enemy(RED, 48, 0, 0.8, RED, 780, 3, 16, x, y)
                     enemy_group.add(enemy)
 
                 if cell == "B":
-                    enemy = Enemy(BLACK, 48, 240, 0.35, BLACK, 780, 0, 16, x, y)
+                    enemy = Enemy(BLACK, 48, 240, 0.35,
+                                  BLACK, 780, 0, 16, x, y)
                     enemy_group.add(enemy)
 
     def level_clear(self):
@@ -593,14 +603,14 @@ class Game():
             if self.current_level == 11:
                 self.level_setup(level_sucessfull)
 
-
                 self.game_active = False
 
     def bullet_bullet_collisions(self):
         for player_bullet_sprite in player_bullet_group.sprites():
             for enemy_bullet_sprite in enemy_bullet_group.sprites():
                 if player_bullet_sprite.rect.colliderect(enemy_bullet_sprite.rect):
-                    bullet_explosion_sound = random.choice(bullet_explosion_list)
+                    bullet_explosion_sound = random.choice(
+                        bullet_explosion_list)
                     bullet_explosion_sound.play()
 
                     player_bullet_sprite.kill()
