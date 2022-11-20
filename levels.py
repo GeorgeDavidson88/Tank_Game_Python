@@ -197,19 +197,20 @@ level_7 = [
  # # # # # # # # # # # # #
              #
 
+
 level_8 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
 "T                       T",
 "T                     R T", #
 "T                       T",
-"T   TTTTTTTTTTTTTTTTTTTTT", #
-"T   T                   T",
-"T   T                   T", #
-"T   T       Y           T",
-"T                   T   T", ##
-"T  R                T   T",
-"T                   T   T", #
-"TTTTTTTTTTTTTTTTTTTTT   T",
+"T     TTTTTTTTTTTTTTTTTTT", #
+"T     T                 T",
+"T     T                 T", #
+"T     T     Y           T",
+"T                 T     T", ##
+"T  R              T     T",
+"T                 T     T", #
+"TTTTTTTTTTTTTTTTTTT     T",
 "T                       T", #
 "T                     P T",
 "T U                     T", #
@@ -218,46 +219,45 @@ level_8 = [
  # # # # # # # # # # # # #
              #
 
+
 level_9 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
+"T           T           T",
+"T           T           T", #
+"T         P T Y          T",
+"T           T           T", #
+"T           T           T",
+"T      TTTTTTTTTTT      T", #
 "T                       T",
-"T U                  G  T", #
+"T           G     R     T", ##
 "T                       T",
-"T                       T", #
-"T     TTTTTTTTT         T",
-"T     T                 T", #
-"T     T                 T",
-"T     T  R           Y  T", ##
-"T     T                 T",
-"T     T                 T", #
-"T     TTTTTTTTT         T",
-"T                       T", #
-"T                       T",
-"T        G           Y  T", #
-"T                       T",
+"T      TTTTTTTTTTT      T", #
+"T           T           T",
+"T           T           T", #
+"T           T           T",
+"T         U T B         T", #
+"T           T           T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
              #
 
 level_10 = [
 "TTTTTTTTTTTTTTTTTTTTTTTTT", #
-"T           T           T",
-"T           T           T", #
-"T     P     T     Y     T",
-"T           T           T", #
-"T           T           T",
-"T      TTTTTTTTTTT      T", #
 "T                       T",
-"T     L     G     R     T", ##
+"T U                     T", #
 "T                       T",
-"T      TTTTTTTTTTT      T", #
-"T           T           T",
-"T           T           T", #
-"T           T           T",
-"T     U     T     B     T", #
-"T           T           T",
+"T                       T", #
+"T     TTTTTTTTT         T",
+"T     T                 T", #
+"T     T                 T",
+"T     T   B           Y T", ##
+"T     T                 T",
+"T     T                 T", #
+"T     TTTTTTTTT         T",
+"T                       T", #
+"T                       T",
+"T         B           Y T", #
+"T                       T",
 "TTTTTTTTTTTTTTTTTTTTTTTTT"] #
  # # # # # # # # # # # # #
              #
-
-
