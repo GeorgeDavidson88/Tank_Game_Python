@@ -564,22 +564,22 @@ class Game():
                 self.level_setup(level_1)
 
             if self.current_level == 2:
-                self.level_setup(level_1)
+                self.level_setup(level_2)
 
             if self.current_level == 3:
-                self.level_setup(level_1)
+                self.level_setup(level_3)
 
             if self.current_level == 4:
-                self.level_setup(level_1)
+                self.level_setup(level_4)
 
             if self.current_level == 5:
-                self.level_setup(level_1)
+                self.level_setup(level_5)
 
             if self.current_level == 6:
-                self.level_setup(level_1)
+                self.level_setup(level_6)
 
             if self.current_level == 7:
-                self.level_setup(level_1)
+                self.level_setup(level_7)
 
             if self.current_level == 8:
                 self.level_setup(level_8)
