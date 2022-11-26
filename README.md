@@ -12,7 +12,6 @@ pip install pygame # install pygame with pip
 ### How To Play
 * W, A, S, and D are used to move around.
 * Hold the right mouse button to shoot.
-
 ### Things To Note
 * Enemy tanks can't kill each other.
 * Enemies will pass through each other.
