@@ -8,7 +8,7 @@
 # R = Red level 5
 # B = Black tank
 
-level_menu = [  
+level_menu = [
     "TTTTTTTTTTTTTTTTTTTTTTTTT",
     "T                       T",
     "T                       T",

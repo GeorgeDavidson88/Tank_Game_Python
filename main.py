@@ -1,15 +1,15 @@
-# import
-import pygame
-import sys
-import time
 import math
 import os
 import random
+import sys
+import time
+
+import pygame
+
 from levels import *
 
 pygame.init()
 
-# display settings
 WIN_WIDTH = 1200
 WIN_HEIGHT = 816
 WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
@@ -21,7 +21,6 @@ pygame.display.set_icon(pygame.image.load(
 
 pygame.mouse.set_visible(False)
 
-# colours
 BLUE = (0, 0, 255)
 
 LIGHT_BROWN = (122, 76, 42)
@@ -40,7 +39,6 @@ WHITE_2 = (247, 247, 247)
 GRAY_1 = (32, 32, 32)
 GRAY_2 = (40, 40, 40)
 
-# sprite groups
 player_group = pygame.sprite.GroupSingle()
 barral_group = pygame.sprite.GroupSingle()
 enemy_group = pygame.sprite.Group()
@@ -50,11 +48,9 @@ collision_tile_group = pygame.sprite.Group()
 backgound_tile_group = pygame.sprite.Group()
 partical_list = []
 
-# fonts
 FONT_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
 FONT_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
-# sounds
 pygame.mixer.set_num_channels(128)
 
 pygame.mixer.music.load(os.path.join("sounds", "music.wav"))
