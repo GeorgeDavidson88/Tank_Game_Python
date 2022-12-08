@@ -10,7 +10,7 @@ A doggy-doo-doo tank game made with Python. You are the blue tank. Kill all the 
 
 Make sure you have Pygame installed.
 
-```bash
+```python
 pip install pygame # install pygame with pip
 ```
 
