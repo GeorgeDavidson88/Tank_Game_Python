@@ -524,7 +524,7 @@ class Game():
     def level_setup(self, level_data):
         for row_index, row in enumerate(level_data):
             for col_index, cell in enumerate(row):
-                x = col_index * 48 # The size of th tiles
+                x = col_index * 48  # The size of th tiles
                 y = row_index * 48
 
                 if cell == " ":
@@ -706,7 +706,7 @@ def main():
     game = Game()
 
     while True:
-        delta_time = time.time() - previous_time # Gets Delta Time
+        delta_time = time.time() - previous_time  # Gets Delta Time
         previous_time = time.time()
 
         for event in pygame.event.get():
