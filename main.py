@@ -17,7 +17,7 @@ WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 pygame.display.set_caption("Tanks")
 
 pygame.display.set_icon(pygame.image.load(
-    os.path.join("graphics", "tank.png")).convert_alpha())
+    os.path.join("icon", "tank.png")).convert_alpha())
 
 pygame.mouse.set_visible(False)
 

@@ -2,11 +2,11 @@
 # U = You
 
 # L = Light brown Tank
-# G = Green level 2
-# Y = Yellow level 3
-# P = Purple level 4
-# R = Red level 5
-# B = Black tank
+# G = Green Tank
+# Y = Yellow Tank
+# P = Purple Tank
+# R = Red Tank
+# B = Black Tank
 
 level_menu = [
     "TTTTTTTTTTTTTTTTTTTTTTTTT",
