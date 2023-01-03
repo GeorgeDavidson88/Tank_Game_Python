@@ -12,17 +12,18 @@ pygame.init()
 
 WIN_WIDTH = 1200
 WIN_HEIGHT = 816
-WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))  # Window Size
 
-pygame.display.set_caption("Tanks")
+pygame.display.set_caption("Tanks")  # Window Title
 
 pygame.display.set_icon(pygame.image.load(
-    os.path.join("icon", "tank.png")).convert_alpha())
+    os.path.join("icon", "tank.png")).convert_alpha())  # Window Icon
 
 pygame.mouse.set_visible(False)
 
-BLUE = (0, 0, 255)
+BLUE = (0, 0, 255)  # Player Colour
 
+# Tank Colours
 LIGHT_BROWN = (122, 76, 42)
 GREEN = (0, 128, 0)
 YELLOW = (245, 187, 39)
@@ -30,15 +31,17 @@ PURPLE = (255, 0, 255)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 
+# Explosion Colours
 ORANGE = (255, 128, 0)
 LIGHT_GRAY = (128, 128, 128)
 
+# Background Colours
 WHITE_1 = (255, 255, 255)
 WHITE_2 = (247, 247, 247)
-
 GRAY_1 = (32, 32, 32)
 GRAY_2 = (40, 40, 40)
 
+# Sprite Groups
 player_group = pygame.sprite.GroupSingle()
 barral_group = pygame.sprite.GroupSingle()
 enemy_group = pygame.sprite.Group()
@@ -48,14 +51,19 @@ collision_tile_group = pygame.sprite.Group()
 backgound_tile_group = pygame.sprite.Group()
 partical_list = []
 
+# Fonts
 FONT_1 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 42)
 FONT_2 = pygame.font.Font(os.path.join("font", "comic_sans.ttf"), 86)
 
+# Maximum number of sound channels to avoid wired sound problems.
 pygame.mixer.set_num_channels(128)
 
+# Music
 pygame.mixer.music.load(os.path.join("sounds", "music.wav"))
-pygame.mixer.music.play(-1)
+pygame.mixer.music.play(-1)  # Looping Music 
+pygame.mixer.music.set_volume(0.4)  # Music volume between 0 and 1.
 
+# Sound Effects
 load_level_sound = pygame.mixer.Sound(os.path.join("sounds", "load_level.wav"))
 
 explosion_sound = pygame.mixer.Sound(os.path.join("sounds", "explosion.wav"))
@@ -104,6 +112,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
 
+        # The player's desired direction is stored in this variable.
         self.direction = pygame.math.Vector2(0, 0)
 
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
@@ -142,7 +151,9 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
 
+        # Multiply by delta time to get the same result on different devices.
         self.rect_pos.x += self.direction.x * self.speed * delta_time
+        # Because you can't place on half a pixle, round the positions.
         self.rect.x = round(self.rect_pos.x)
 
     def vertical_movement(self, delta_time):
@@ -159,37 +170,38 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = round(self.rect_pos.y)
 
     def shoot(self, delta_time):
-        if pygame.mouse.get_pressed()[0]:
+        if pygame.mouse.get_pressed()[0]:  # If Left Click
             if self.shoot_timer < 0:
+                # Get a random shoot sound.
                 shoot_sound = random.choice(shoot_sound_list)
-                shoot_sound.play()
-
-                target = player_group.sprite.rect.center
+                shoot_sound.play()  # Play the sound.
 
                 bullet = Bullet(self.bullet_colour, self.bullet_speed, self.bullet_max_bounces,
-                                self.bullet_size, enemy_group, target, pygame.mouse.get_pos())
+                                self.bullet_size, enemy_group, player_group.sprite.rect.center, pygame.mouse.get_pos())
                 player_bullet_group.add(bullet)
 
-                self.shoot_timer = self.shoot_delay
+                self.shoot_timer = self.shoot_delay  # Restart the shoot timer.
 
-        self.shoot_timer -= delta_time
+        self.shoot_timer -= delta_time  # Subtract the shooting timer.
 
     def draw(self):
         pygame.draw.rect(WIN, self.colour, (self.rect.x,
-                         self.rect.y, self.width, self.height), 0, 8)
+                         self.rect.y, self.width, self.height), 0, 8)  # Draw the player.
 
         center_x, center_y = self.rect.center
-
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         self.rise = mouse_x - center_x
         self.run = mouse_y - center_y
 
+        # Returns the arc tangent in randients for x and y.
         self.angle = math.atan2(self.run, self.rise)
 
+        # Get the individual directions of x and y.
         self.delta_y = math.sin(self.angle)
         self.delta_x = math.cos(self.angle)
 
+        # Doted line
         pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
                            self.rise / 8, mouse_y + self.delta_y - self.run / 8), 8)
         pygame.draw.circle(WIN, BLUE, (mouse_x + self.delta_x -
@@ -240,15 +252,20 @@ class Enemy(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
 
-        self.vector2 = pygame.math.Vector2(0, 0)
+        self.vector2 = pygame.math.Vector2(0, 0)  # Enemy Direction
+
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
 
+        # How long until the enemy will start shooting.
         self.shoot_timer = random.randint(1, 20) / 10
 
+        # How long until the enemy will change direction.
         self.direction_change_timer = random.randint(2, 5)
 
+        # Emeny Directions
         self.direction_list = [-1, 1]
 
+        # Starting the enemy off in a random direction.
         self.vector2.x = random.choice(self.direction_list)
         self.vector2.y = random.choice(self.direction_list)
 
@@ -258,6 +275,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.vector2.x > 0:
                     self.rect.right = sprite.rect.left
                     self.rect_pos.x = sprite.rect.left - self.width
+                    # If you collide with a wall, change your x direction.
                     self.vector2.x *= -1
 
                 elif self.vector2.x < 0:
@@ -271,6 +289,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.vector2.y > 0:
                     self.rect.bottom = sprite.rect.top
                     self.rect_pos.y = sprite.rect.top - self.height
+                    # If you collide with a wall, change your y direction.
                     self.vector2.y *= -1
 
                 elif self.vector2.y < 0:
@@ -314,7 +333,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, delta_time):
         pygame.draw.rect(WIN, self.colour, (self.rect.x,
-                         self.rect.y, self.width, self.height), 0, 8)
+                         self.rect.y, self.width, self.height), 0, 8)  # Draw Enemy
 
         self.horizontal_movement(delta_time)
         self.horizontal_collisions()
@@ -345,12 +364,12 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=start_pos)
 
         center_x, center_y = self.rect.center
-
         target_x, target_y = target_pos
 
         self.rise = target_x - center_x
         self.run = target_y - center_y
 
+        # Returns the arc tangent in randients for x and y. We need this to shoot the bullet in the right direction.
         self.angle = math.atan2(self.run, self.rise)
 
         self.delta_y = math.sin(self.angle) * self.bullet_speed
@@ -358,7 +377,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.rect_pos = pygame.math.Vector2(self.rect.x, self.rect.y)
 
-        self.bounce_index = 0
+        self.bounce_index = 0  # Keeps track of the number of bounces.
 
     def collisions(self):
         for sprite in collision_tile_group.sprites():
@@ -505,7 +524,7 @@ class Game():
     def level_setup(self, level_data):
         for row_index, row in enumerate(level_data):
             for col_index, cell in enumerate(row):
-                x = col_index * 48
+                x = col_index * 48 # The size of th tiles
                 y = row_index * 48
 
                 if cell == " ":
@@ -687,7 +706,7 @@ def main():
     game = Game()
 
     while True:
-        delta_time = time.time() - previous_time
+        delta_time = time.time() - previous_time # Gets Delta Time
         previous_time = time.time()
 
         for event in pygame.event.get():
