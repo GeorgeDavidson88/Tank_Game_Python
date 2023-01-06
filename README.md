@@ -1,6 +1,6 @@
 # Tank Game
 
-A doggy-doo-doo tank game made with Python. You are the blue tank. Kill all the enemy tanks. There are 10 levels and 6 types of tanks. I don't know what I am doing :)
+A doggy-doo-doo tank game made with Python. You are the blue tank. Kill all the enemy tanks. There are 10 levels and 6 types of tanks.
 
 ![tanks_in_action.png](README.assets/tanks_in_action.png)
 
