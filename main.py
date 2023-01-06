@@ -43,7 +43,6 @@ GRAY_2 = (40, 40, 40)
 
 # Sprite Groups
 player_group = pygame.sprite.GroupSingle()
-barral_group = pygame.sprite.GroupSingle()
 enemy_group = pygame.sprite.Group()
 player_bullet_group = pygame.sprite.Group()
 enemy_bullet_group = pygame.sprite.Group()
