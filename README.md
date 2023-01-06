@@ -1,4 +1,4 @@
-# Tanks
+# Tank-Game
 
 A tank game made with pygame. You are the blue tank. Kill all the enemy tanks. There are 10 levels and 6 types of tanks.
 
