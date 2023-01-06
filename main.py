@@ -17,7 +17,7 @@ WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))  # Window Size
 pygame.display.set_caption("Tanks")  # Window Title
 
 pygame.display.set_icon(pygame.image.load(
-    os.path.join("icon", "tank.png")).convert_alpha())  # Window Icon
+    os.path.join("icon", "icon.png")).convert_alpha())  # Window Icon
 
 pygame.mouse.set_visible(False)
 
